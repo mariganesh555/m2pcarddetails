@@ -15,6 +15,7 @@ class CustomText extends StatefulWidget {
   final int maxLines;
   final FontWeight fontWeight;
   final FontStyle fontStyle;
+  double letterSpacing;
 
   CustomText(String text,
       {this.fontWeight,
@@ -27,7 +28,8 @@ class CustomText extends StatefulWidget {
       this.onTap,
       this.isUnderLine = false,
       this.isSingleLine = false,
-      this.maxLines})
+      this.maxLines,
+      this.letterSpacing})
       // ignore: prefer_initializing_formals
       : text = text;
 
@@ -46,6 +48,7 @@ class _CustomTextState extends State<CustomText> {
       overflow: widget.isSingleLine ? TextOverflow.ellipsis : null,
       maxLines: widget.maxLines,
       style: TextStyle(
+          letterSpacing: widget.letterSpacing,
           decoration: widget.isUnderLine
               ? TextDecoration.underline
               : TextDecoration.none,

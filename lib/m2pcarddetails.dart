@@ -20,7 +20,8 @@ class CardDetailScreen extends StatefulWidget {
   _CardDetailScreenState createState() => _CardDetailScreenState();
 }
 
-class _CardDetailScreenState extends State<CardDetailScreen> {
+class _CardDetailScreenState extends State<CardDetailScreen>
+    with SingleTickerProviderStateMixin {
   TextEditingController cardHolderTextController = TextEditingController();
   TextEditingController cardNumberTextController = TextEditingController();
   TextEditingController expiryTextController = TextEditingController();
@@ -28,11 +29,13 @@ class _CardDetailScreenState extends State<CardDetailScreen> {
   bool isSecurityCodeHidden = true;
 
   String cardNumber = "6666989045907890";
+  String securityCode = "456";
 
   String cardholderName;
 
   Image cardBackGroundImage;
   Image cardTypeImage;
+  TabController _tabController;
 
   @override
   void initState() {
@@ -40,7 +43,15 @@ class _CardDetailScreenState extends State<CardDetailScreen> {
     cardHolderTextController.text = "Udit Saxena";
     cardNumberTextController.text = cardNumber;
     expiryTextController.text = "08/22";
-    securityCodeTextController.text = "456";
+    if (isSecurityCodeHidden) {
+      securityCodeTextController.text = "***";
+    } else {
+      securityCodeTextController.text = securityCode;
+    }
+    _tabController = new TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -55,157 +66,254 @@ class _CardDetailScreenState extends State<CardDetailScreen> {
     var tenetBgImage =
         new AssetImage('assets/images/tenetBg.png', package: 'm2pcarddetails');
 
+    var wavesImage =
+        new AssetImage('assets/images/Waves.png', package: 'm2pcarddetails');
+
     cardNumberTextController.text = getCardNumber();
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(250, 250, 250, 1),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8.0, top: 50, right: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(top: 50, right: 20),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 22.0),
+                    child: CustomText(
+                      "Virtual Card",
+                      fontSize: 16,
+                      color: ColorResource.color1515151,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Spacer(),
+                  Container(
+                    width: 19.5,
+                    height: 19.5,
+                    child: Image(image: cancelImage, fit: BoxFit.cover),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  CustomText(
+                    "Close",
+                    fontSize: 13,
+                    color: ColorResource.color1515151.withOpacity(0.5),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.all(20.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: Container(
+                width: double.infinity,
+                child: Stack(
                   children: [
                     Container(
-                      width: 19.5,
-                      height: 19.5,
-                      child: Image(image: cancelImage, fit: BoxFit.cover),
+                      width: double.infinity,
+                      child: Image(
+                        image: cardBgImage,
+                        fit: BoxFit.fill,
+                      ),
                     ),
-                    SizedBox(
-                      width: 5,
+                    Container(
+                      width: double.infinity,
+                      child: Image(
+                        image: wavesImage,
+                        fit: BoxFit.fill,
+                      ),
                     ),
-                    CustomText(
-                      "Cancel",
-                      fontSize: 13,
-                      color: ColorResource.color1515151.withOpacity(0.5),
-                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 30.0, left: 16, right: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CustomText(
+                                widget.tenatname,
+                                fontSize: 15,
+                                color: Colors.white,
+                              ),
+                              Spacer(),
+                              Container(
+                                width: 44,
+                                height: 28,
+                                child: Image(image: tenetBgImage),
+                              )
+                              // Expanded(
+                              //   child: CustomText(
+                              //     "Ganesh",
+                              //     fontSize: 15,
+                              //     color: Colors.white,
+                              //     fontWeight: FontWeight.w300,
+                              //     textAlign: TextAlign.end,
+                              //   ),
+                              // )
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 30.0),
+                            child: CustomText(
+                              getCardNumber(isTopPositionCardNumber: true),
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomText(
+                                    "Valid Thru ",
+                                    color: Colors.white,
+                                    fontSize: 9,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 6.0),
+                                    child: CustomText(
+                                      expiryTextController.text,
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 50.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomText(
+                                      "CVV",
+                                      color: Colors.white,
+                                      fontSize: 9,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 6.0),
+                                      child: CustomText(
+                                        securityCodeTextController.text,
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Spacer(),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    isSecurityCodeHidden =
+                                        !isSecurityCodeHidden;
+                                    if (isSecurityCodeHidden) {
+                                      securityCodeTextController.text = "***";
+                                    } else {
+                                      securityCodeTextController.text =
+                                          securityCode;
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                      color: Colors.transparent,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  padding: const EdgeInsets.all(10),
+                                  child: CustomText(
+                                    isSecurityCodeHidden
+                                        ? "View CVV"
+                                        : "Hide CVV",
+                                    fontSize: 10,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(25),
-                child: Container(
-                  width: double.infinity,
-                  child: Stack(
-                    children: [
-                      Image(image: cardBgImage, fit: BoxFit.cover),
-                      Padding(
-                        padding: const EdgeInsets.all(30.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CustomText(
-                                  widget.tenatname,
-                                  fontSize: 15,
-                                  color: Colors.white,
-                                ),
-                                Spacer(),
-                                Expanded(
-                                  child: CustomText(
-                                    "Ganesh",
-                                    fontSize: 15,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w300,
-                                    textAlign: TextAlign.end,
-                                  ),
-                                )
-                              ],
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 30.0),
-                              child: CustomText(
-                                getCardNumber(isTopPositionCardNumber: true),
-                                fontSize: 15,
-                                color: Colors.white.withOpacity(0.7),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Spacer(),
-                                Container(
-                                  width: 44,
-                                  height: 28,
-                                  child: Image(image: tenetBgImage),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(15)),
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                children: [
-                  CustomTextField(
-                    "Card Holder",
-                    "Card Holder",
-                    cardHolderTextController,
-                    borderColor: Colors.transparent,
-                    titleColor: ColorResource.color1515151.withOpacity(0.4),
-                    isReadOnly: true,
-                    isCopyEnabled: true,
-                    isEnable: false,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: CustomTextField(
-                      "Card Number",
-                      "Card Number",
-                      cardNumberTextController,
-                      borderColor: Colors.transparent,
-                      titleColor: ColorResource.color1515151.withOpacity(0.4),
-                      isReadOnly: true,
-                      isCopyEnabled: true,
-                      isEnable: false,
-                    ),
-                  ),
-                  CustomTextField(
-                    "Expiry MM/YY",
-                    "MM/YY",
-                    expiryTextController,
-                    borderColor: Colors.transparent,
-                    titleColor: ColorResource.color1515151.withOpacity(0.4),
-                    isReadOnly: true,
-                    isEnable: false,
-                  )
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(15)),
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              child: SecurityCodeTextField(
-                  securityCodeTextController, isSecurityCodeHidden, () {
-                setState(() {
-                  isSecurityCodeHidden = !isSecurityCodeHidden;
-                });
-              }),
-            )
-          ],
-        ),
+          ),
+          Expanded(
+              child: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: _buildTabBar(),
+          ))
+          // Container(
+          //   padding: const EdgeInsets.all(20),
+          //   decoration: BoxDecoration(
+          //       color: Colors.white, borderRadius: BorderRadius.circular(15)),
+          //   margin: const EdgeInsets.symmetric(horizontal: 10),
+          //   child: Column(
+          //     children: [
+          //       CustomTextField(
+          //         "Card Holder",
+          //         "Card Holder",
+          //         cardHolderTextController,
+          //         borderColor: Colors.transparent,
+          //         titleColor: ColorResource.color1515151.withOpacity(0.4),
+          //         isReadOnly: true,
+          //         isCopyEnabled: true,
+          //         isEnable: false,
+          //       ),
+          //       Padding(
+          //         padding: const EdgeInsets.symmetric(vertical: 10.0),
+          //         child: CustomTextField(
+          //           "Card Number",
+          //           "Card Number",
+          //           cardNumberTextController,
+          //           borderColor: Colors.transparent,
+          //           titleColor: ColorResource.color1515151.withOpacity(0.4),
+          //           isReadOnly: true,
+          //           isCopyEnabled: true,
+          //           isEnable: false,
+          //         ),
+          //       ),
+          //       CustomTextField(
+          //         "Expiry MM/YY",
+          //         "MM/YY",
+          //         expiryTextController,
+          //         borderColor: Colors.transparent,
+          //         titleColor: ColorResource.color1515151.withOpacity(0.4),
+          //         isReadOnly: true,
+          //         isEnable: false,
+          //       )
+          //     ],
+          //   ),
+          // ),
+          // Container(
+          //   padding: const EdgeInsets.all(20),
+          //   decoration: BoxDecoration(
+          //       color: Colors.white, borderRadius: BorderRadius.circular(15)),
+          //   margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          //   child: SecurityCodeTextField(
+          //       securityCodeTextController, isSecurityCodeHidden, () {
+          //     setState(() {
+          //       isSecurityCodeHidden = !isSecurityCodeHidden;
+          //     });
+          //   }),
+          // )
+        ],
       ),
     );
   }
@@ -232,5 +340,72 @@ class _CardDetailScreenState extends State<CardDetailScreen> {
       }
     }
     return buffer.toString();
+  }
+
+  Widget _buildTabBar() {
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          // the tab bar with two items
+
+          TabBar(
+            indicatorColor: ColorResource.color4D7DFF,
+            indicatorWeight: 3,
+            controller: _tabController,
+            tabs: [
+              Tab(
+                child: CustomText(
+                  "Manage Card",
+                  fontSize: 14,
+                  color: _tabController.index == 0
+                      ? ColorResource.color4D7DFF
+                      : ColorResource.color1515151.withOpacity(0.5),
+                ),
+                // icon: Icon(Icons.directions_bike),
+              ),
+              Tab(
+                child: CustomText(
+                  "Transaction Limit",
+                  fontSize: 14,
+                  color: _tabController.index == 1
+                      ? ColorResource.color4D7DFF
+                      : ColorResource.color1515151.withOpacity(0.5),
+                ),
+                // icon: Icon(Icons.directions_bike),
+              ),
+            ],
+          ),
+
+          // create widgets for each tab bar here
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // first tab bar view widget
+                Container(
+                  color: Colors.red,
+                  child: Center(
+                    child: Text(
+                      'Bike',
+                    ),
+                  ),
+                ),
+
+                // second tab bar viiew widget
+                Container(
+                  color: Colors.pink,
+                  child: Center(
+                    child: Text(
+                      'Car',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
