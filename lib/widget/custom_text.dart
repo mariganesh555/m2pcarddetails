@@ -18,7 +18,7 @@ class CustomText extends StatefulWidget {
   double letterSpacing;
 
   CustomText(String text,
-      {this.fontWeight,
+      {this.fontWeight = FontWeight.w400,
       this.fontStyle,
       this.fontSize = 18,
       this.font = Font.IlisarniqRegular,

@@ -14,6 +14,7 @@ dependencies:
   dio: ^3.0.10
   json_annotation: ^3.1.1
   fluttertoast: ^7.1.8
+  pin_code_fields: ^7.0.0
   flutter:
     sdk: flutter 
   
@@ -42,6 +43,13 @@ flutter:
     - packages/m2pcarddetails/assets/images/cardBg.png
     - packages/m2pcarddetails/assets/images/tenetBg.png
     - packages/m2pcarddetails/assets/images/Waves.png
+    - packages/m2pcarddetails/assets/images/blockCard.png
+    - packages/m2pcarddetails/assets/images/cardPreference.png
+    - packages/m2pcarddetails/assets/images/setpin.png
+    - packages/m2pcarddetails/assets/images/downArrow.png
+    - packages/m2pcarddetails/assets/images/upArrow.png
+    - packages/m2pcarddetails/assets/images/otp.png
+    - packages/m2pcarddetails/assets/images/tick.png
     
     
   #
