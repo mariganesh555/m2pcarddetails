@@ -53,6 +53,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
 
   bool setpinVisibility = false;
   bool blockCardVisibility = false;
+  bool cardPreferenceVisibility = false;
 
   HomeBloc bloc;
 
@@ -131,6 +132,28 @@ class _CardDetailScreenState extends State<CardDetailScreen>
               });
         }
 
+        if (state is HomeTemperaryUnBlockOtpVerificationState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return EnterVerificationCodeDialogBox((text) {
+                  bloc.add(HomeTemperaryUnBlockCustomDialogEvent());
+                });
+              });
+        }
+
+        if (state is HomePeramanantUnBlockOtpVerificationState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return EnterVerificationCodeDialogBox((text) {
+                  bloc.add(HomePermanantUnBlockCustomDialogEvent());
+                });
+              });
+        }
+
         if (state is HomeCustomDialogState) {
           showDialog(
               barrierDismissible: false,
@@ -196,6 +219,98 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                   setState(() {
                     bloc.blockPermanant = true;
                   });
+                  Navigator.pop(context);
+                });
+              });
+        }
+
+        if (state is HomeTemperaryUnBlockCustomDialogState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return CustomDialog(
+                    Container(
+                      width: 56,
+                      height: 56,
+                      child: Image(
+                        image: ImageResource.tickImage,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    "Your card has been Unblocked",
+                    "Continue", () {
+                  setState(() {
+                    bloc.blockTemporary = false;
+                  });
+                  Navigator.pop(context);
+                });
+              });
+        }
+
+        if (state is HomePermanantUnBlockCustomDialogState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return CustomDialog(
+                    Container(
+                      width: 56,
+                      height: 56,
+                      child: Image(
+                        image: ImageResource.tickImage,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    "Your card has been Unblocked",
+                    "Continue", () {
+                  setState(() {
+                    bloc.blockPermanant = false;
+                  });
+                  Navigator.pop(context);
+                });
+              });
+        }
+
+        if (state is HomeCardLockCustomDialogState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return CustomDialog(
+                    Container(
+                      width: 81,
+                      height: 81,
+                      child: Image(
+                        image: ImageResource.lock,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    "${state.cardPreference} has been locked",
+                    "Continue", () {
+                  lockCardPreferenceValue(state.cardPreference);
+                  Navigator.pop(context);
+                });
+              });
+        }
+
+        if (state is HomeCardUnLockCustomDialogState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return CustomDialog(
+                    Container(
+                      width: 81,
+                      height: 81,
+                      child: Image(
+                        image: ImageResource.unlock,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    "${state.cardPreference} has been Unlocked",
+                    "Continue", () {
+                  unlockCardPreferenceValue(state.cardPreference);
                   Navigator.pop(context);
                 });
               });
@@ -740,9 +855,8 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                           bloc.add(
                                               HomeTemperaryBlockAlertEvent());
                                         } else {
-                                          setState(() {
-                                            bloc.blockTemporary = false;
-                                          });
+                                          bloc.add(
+                                              HomeTemperaryUnBlockOtpVerificationEvent());
                                         }
                                       }),
                                       SizedBox(
@@ -756,9 +870,8 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                           bloc.add(
                                               HomePremanantBlockAlertEvent());
                                         } else {
-                                          setState(() {
-                                            bloc.blockPermanant = false;
-                                          });
+                                          bloc.add(
+                                              HomePermanantUnBlockOtpVerificationEvent());
                                         }
                                       })
                                     ],
@@ -775,32 +888,148 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
-                          child: Row(
+                          child: Column(
                             children: [
-                              Container(
-                                width: 24,
-                                height: 24,
-                                child: Image(
-                                    image: ImageResource.cardPreferenceImage,
-                                    fit: BoxFit.cover),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 24,
+                                    height: 24,
+                                    child: Image(
+                                        image:
+                                            ImageResource.cardPreferenceImage,
+                                        fit: BoxFit.cover),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 12.0),
+                                    child: CustomText(
+                                      "Card Preference",
+                                      fontSize: 14,
+                                      color: ColorResource.color1515151
+                                          .withOpacity(0.8),
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        cardPreferenceVisibility =
+                                            !cardPreferenceVisibility;
+                                      });
+                                    },
+                                    child: Container(
+                                      width: 24,
+                                      height: 24,
+                                      child: Container(
+                                        width: 24,
+                                        height: 24,
+                                        child: Image(
+                                            image: cardPreferenceVisibility
+                                                ? ImageResource.upArrowImage
+                                                : ImageResource.downArrowImage,
+                                            fit: BoxFit.cover),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 12.0),
-                                child: CustomText(
-                                  "Card Preference",
-                                  fontSize: 14,
-                                  color: ColorResource.color1515151
-                                      .withOpacity(0.8),
+                              Visibility(
+                                visible: cardPreferenceVisibility,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 20.0),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 12,
+                                      ),
+                                      CustomSwitch(
+                                          "ATM Transactions",
+                                          "${!bloc.atmTransactions ? "Enable" : "Lock"} atm transactions",
+                                          bloc.atmTransactions, (value) {
+                                        if (value) {
+                                          bloc.add(
+                                              HomeCardLockCustomDialogEvent(
+                                                  "ATM Transactions"));
+                                        } else {
+                                          bloc.add(
+                                              HomeCardUnLockCustomDialogEvent(
+                                                  "ATM Transactions"));
+                                        }
+                                      }),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      CustomSwitch(
+                                          "POS Transactions",
+                                          "${!bloc.posTransactions ? "Enable" : "Lock"} POS transactions",
+                                          bloc.posTransactions, (value) {
+                                        if (value) {
+                                          bloc.add(
+                                              HomeCardLockCustomDialogEvent(
+                                                  "POS Transactions"));
+                                        } else {
+                                          bloc.add(
+                                              HomeCardUnLockCustomDialogEvent(
+                                                  "POS Transactions"));
+                                        }
+                                      }),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      CustomSwitch(
+                                          "Ecom Transactions",
+                                          "${!bloc.ecomTransactions ? "Enable" : "Lock"} Ecom transactions",
+                                          bloc.ecomTransactions, (value) {
+                                        if (value) {
+                                          bloc.add(
+                                              HomeCardLockCustomDialogEvent(
+                                                  "Ecom Transactions"));
+                                        } else {
+                                          bloc.add(
+                                              HomeCardUnLockCustomDialogEvent(
+                                                  "Ecom Transactions"));
+                                        }
+                                      }),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      CustomSwitch(
+                                          "International Transactions",
+                                          "${!bloc.internationalTransactions ? "Enable" : "Lock"} International Transactions",
+                                          bloc.internationalTransactions,
+                                          (value) {
+                                        if (value) {
+                                          bloc.add(HomeCardLockCustomDialogEvent(
+                                              "International Transactions"));
+                                        } else {
+                                          bloc.add(
+                                              HomeCardUnLockCustomDialogEvent(
+                                                  "International Transactions"));
+                                        }
+                                      }),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      CustomSwitch(
+                                          "Contactless Transaction",
+                                          "${!bloc.contactlessTransactions ? "Enable" : "Lock"} Contactless Transaction",
+                                          bloc.contactlessTransactions,
+                                          (value) {
+                                        if (value) {
+                                          bloc.add(
+                                              HomeCardLockCustomDialogEvent(
+                                                  "Contactless Transaction"));
+                                        } else {
+                                          bloc.add(
+                                              HomeCardUnLockCustomDialogEvent(
+                                                  "Contactless Transaction"));
+                                        }
+                                      })
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Spacer(),
-                              Container(
-                                width: 24,
-                                height: 24,
-                                child: Image(
-                                    image: ImageResource.downArrowImage,
-                                    fit: BoxFit.cover),
-                              ),
+                              )
                             ],
                           ),
                         )
@@ -824,6 +1053,36 @@ class _CardDetailScreenState extends State<CardDetailScreen>
         ],
       ),
     );
+  }
+
+  void lockCardPreferenceValue(String text) {
+    if (text == "ATM Transactions") {
+      bloc.atmTransactions = true;
+    } else if (text == "POS Transactions") {
+      bloc.posTransactions = true;
+    } else if (text == "Ecom Transactions") {
+      bloc.ecomTransactions = true;
+    } else if (text == "International Transactions") {
+      bloc.internationalTransactions = true;
+    } else if (text == "Contactless Transaction") {
+      bloc.contactlessTransactions = true;
+    }
+    setState(() {});
+  }
+
+  void unlockCardPreferenceValue(String text) {
+    if (text == "ATM Transactions") {
+      bloc.atmTransactions = false;
+    } else if (text == "POS Transactions") {
+      bloc.posTransactions = false;
+    } else if (text == "Ecom Transactions") {
+      bloc.ecomTransactions = false;
+    } else if (text == "International Transactions") {
+      bloc.internationalTransactions = false;
+    } else if (text == "Contactless Transaction") {
+      bloc.contactlessTransactions = false;
+    }
+    setState(() {});
   }
 
   @override

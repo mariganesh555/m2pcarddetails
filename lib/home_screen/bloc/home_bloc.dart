@@ -16,6 +16,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   bool blockTemporary = false;
   bool blockPermanant = false;
 
+  bool atmTransactions = false;
+  bool posTransactions = false;
+  bool ecomTransactions = false;
+  bool internationalTransactions = false;
+  bool contactlessTransactions = false;
+
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
     if (event is HomeEnterVerificationCodeAlertEvent) {
@@ -71,6 +77,29 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     if (event is HomePermanantBlockOtpVerificationEvent) {
       yield HomePeramanantBlockOtpVerificationState();
+    }
+
+    if (event is HomeTemperaryUnBlockOtpVerificationEvent) {
+      yield HomeTemperaryUnBlockOtpVerificationState();
+    }
+
+    if (event is HomePermanantUnBlockOtpVerificationEvent) {
+      yield HomePeramanantUnBlockOtpVerificationState();
+    }
+
+    if (event is HomeTemperaryUnBlockCustomDialogEvent) {
+      yield HomeTemperaryUnBlockCustomDialogState();
+    }
+
+    if (event is HomePermanantUnBlockCustomDialogEvent) {
+      yield HomePermanantUnBlockCustomDialogState();
+    }
+    if (event is HomeCardUnLockCustomDialogEvent) {
+      yield HomeCardUnLockCustomDialogState(event.cardPreference);
+    }
+
+    if (event is HomeCardLockCustomDialogEvent) {
+      yield HomeCardLockCustomDialogState(event.cardPreference);
     }
   }
 }

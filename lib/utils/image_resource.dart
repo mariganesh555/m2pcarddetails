@@ -42,4 +42,10 @@ class ImageResource {
   static const blockCardConformation = AssetImage(
       'assets/images/blockCardConformation.png',
       package: 'm2pcarddetails');
+
+  static const lock =
+      AssetImage('assets/images/lock.png', package: 'm2pcarddetails');
+
+  static const unlock =
+      AssetImage('assets/images/unlock.png', package: 'm2pcarddetails');
 }

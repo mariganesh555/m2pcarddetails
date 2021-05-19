@@ -21,6 +21,20 @@ class HomeTemperaryBlockCustomDialogState extends HomeState {}
 
 class HomePermanantBlockCustomDialogState extends HomeState {}
 
+class HomeTemperaryUnBlockCustomDialogState extends HomeState {}
+
+class HomePermanantUnBlockCustomDialogState extends HomeState {}
+
+class HomeCardLockCustomDialogState extends HomeState {
+  String cardPreference;
+  HomeCardLockCustomDialogState(this.cardPreference);
+}
+
+class HomeCardUnLockCustomDialogState extends HomeState {
+  String cardPreference;
+  HomeCardUnLockCustomDialogState(this.cardPreference);
+}
+
 class HomePeramanantBlockAlertState extends HomeState {}
 
 class HomeTemperaryBlockAlertState extends HomeState {}
@@ -28,3 +42,7 @@ class HomeTemperaryBlockAlertState extends HomeState {}
 class HomePeramanantBlockOtpVerificationState extends HomeState {}
 
 class HomeTemperaryBlockOtpVerificationState extends HomeState {}
+
+class HomePeramanantUnBlockOtpVerificationState extends HomeState {}
+
+class HomeTemperaryUnBlockOtpVerificationState extends HomeState {}
