@@ -13,6 +13,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   TextEditingController conformPinTextController = TextEditingController();
   TextEditingController securityCodeTextController = TextEditingController();
 
+  bool blockTemporary = false;
+  bool blockPermanant = false;
+
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
     if (event is HomeEnterVerificationCodeAlertEvent) {
@@ -45,6 +48,29 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     if (event is HomeCustomDialogEvent) {
       yield HomeCustomDialogState();
+    }
+
+    if (event is HomePremanantBlockAlertEvent) {
+      yield HomePeramanantBlockAlertState();
+    }
+
+    if (event is HomeTemperaryBlockAlertEvent) {
+      yield HomeTemperaryBlockAlertState();
+    }
+    if (event is HomePermanantBlockCustomDialogEvent) {
+      yield HomePermanantBlockCustomDialogState();
+    }
+
+    if (event is HomeTemperaryBlockCustomDialogEvent) {
+      yield HomeTemperaryBlockCustomDialogState();
+    }
+
+    if (event is HomeTemperaryBlockOtpVerificationEvent) {
+      yield HomeTemperaryBlockOtpVerificationState();
+    }
+
+    if (event is HomePermanantBlockOtpVerificationEvent) {
+      yield HomePeramanantBlockOtpVerificationState();
     }
   }
 }

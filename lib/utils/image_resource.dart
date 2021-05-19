@@ -35,4 +35,11 @@ class ImageResource {
 
   static const tickImage =
       AssetImage('assets/images/tick.png', package: 'm2pcarddetails');
+
+  static const copy =
+      AssetImage('assets/images/copy.png', package: 'm2pcarddetails');
+
+  static const blockCardConformation = AssetImage(
+      'assets/images/blockCardConformation.png',
+      package: 'm2pcarddetails');
 }

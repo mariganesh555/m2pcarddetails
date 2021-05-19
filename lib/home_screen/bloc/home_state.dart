@@ -16,3 +16,15 @@ class HomeErrorState extends HomeState {
 class HomeConformOtpAlertState extends HomeState {}
 
 class HomeCustomDialogState extends HomeState {}
+
+class HomeTemperaryBlockCustomDialogState extends HomeState {}
+
+class HomePermanantBlockCustomDialogState extends HomeState {}
+
+class HomePeramanantBlockAlertState extends HomeState {}
+
+class HomeTemperaryBlockAlertState extends HomeState {}
+
+class HomePeramanantBlockOtpVerificationState extends HomeState {}
+
+class HomeTemperaryBlockOtpVerificationState extends HomeState {}

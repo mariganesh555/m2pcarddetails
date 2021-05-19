@@ -50,6 +50,7 @@ flutter:
     - packages/m2pcarddetails/assets/images/upArrow.png
     - packages/m2pcarddetails/assets/images/otp.png
     - packages/m2pcarddetails/assets/images/tick.png
+    - packages/m2pcarddetails/assets/images/blockCardConformation.png
     
     
   #

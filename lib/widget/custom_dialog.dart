@@ -11,7 +11,7 @@ import 'custom_text.dart';
 class CustomDialog extends StatefulWidget {
   Function onProceedTapped;
   bool isCancelButtonRequired;
-  AssetImage image;
+  Widget image;
   String text;
   String buttonText;
 
@@ -54,11 +54,7 @@ class _CustomDialogState extends State<CustomDialog> {
               Padding(
                 padding: const EdgeInsets.only(top: 36.0),
                 child: Center(
-                  child: Container(
-                      width: 56,
-                      height: 56,
-                      child: Image(
-                          image: widget.image, fit: BoxFit.cover)),
+                  child: widget.image,
                 ),
               ),
               const SizedBox(
@@ -75,49 +71,43 @@ class _CustomDialogState extends State<CustomDialog> {
               const SizedBox(
                 height: 38,
               ),
-              Center(
-                child: PrimaryButton(
-                  widget.buttonText,
-                  color: ColorResource.colorEBF0FF,
-                  textColor: ColorResource.color4C7DFF,
-                  isMarginRequired: false,
-                  onClick: () {
-                    widget.onProceedTapped();
-                  },
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              if (widget.isCancelButtonRequired)
-                Center(
-                  child: Container(
-                    width: 60,
+              Row(
+                children: [
+                  if (widget.isCancelButtonRequired)
+                    Container(
+                      width: 76,
+                      child: PrimaryButton(
+                        "Cancel",
+                        onClick: () {
+                          Navigator.pop(context);
+                        },
+                        color: Colors.transparent,
+                        isMarginRequired: false,
+                        textColor: ColorResource.color4C7DFF,
+                      ),
+                    ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
                     child: PrimaryButton(
-                      "Cancel",
-                      onClick: () {
-                        Navigator.pop(context);
-                      },
-                      color: Colors.transparent,
+                      widget.buttonText,
+                      color: ColorResource.colorEBF0FF,
+                      textColor: ColorResource.color4C7DFF,
                       isMarginRequired: false,
-                      textColor: ColorResource.color616267,
+                      onClick: () {
+                        widget.onProceedTapped();
+                      },
                     ),
                   ),
-                ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
             ],
           ),
         ),
-        // Positioned(
-        //   left: 16,
-        //   right: 16,
-        //   child: CircleAvatar(
-        //     backgroundColor: Colors.transparent,
-        //     radius: 16,
-        //     child: ClipRRect(
-        //         borderRadius: BorderRadius.all(Radius.circular(16)),
-        //         child: Icon(CupertinoIcons.home)),
-        //   ),
-        // ),
       ],
     );
   }

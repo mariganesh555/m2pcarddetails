@@ -2,7 +2,9 @@ library m2pcarddetails;
 
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:m2pcarddetails/home_screen/bloc/home_bloc.dart';
 import 'package:m2pcarddetails/home_screen/bloc/home_event.dart';
@@ -10,6 +12,7 @@ import 'package:m2pcarddetails/utils/apputils.dart';
 import 'package:m2pcarddetails/utils/color_resource.dart';
 import 'package:m2pcarddetails/utils/image_resource.dart';
 import 'package:m2pcarddetails/widget/custom_dialog.dart';
+import 'package:m2pcarddetails/widget/custom_switch.dart';
 import 'package:m2pcarddetails/widget/custom_text.dart';
 import 'package:m2pcarddetails/widget/enter_verificationcode_dialog.dart';
 import 'package:m2pcarddetails/widget/plain_textfield.dart';
@@ -49,6 +52,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
   int pendingSeconds = 180;
 
   bool setpinVisibility = false;
+  bool blockCardVisibility = false;
 
   HomeBloc bloc;
 
@@ -105,15 +109,145 @@ class _CardDetailScreenState extends State<CardDetailScreen>
               });
         }
 
+        if (state is HomeTemperaryBlockOtpVerificationState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return EnterVerificationCodeDialogBox((text) {
+                  bloc.add(HomeTemperaryBlockCustomDialogEvent());
+                });
+              });
+        }
+
+        if (state is HomePeramanantBlockOtpVerificationState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return EnterVerificationCodeDialogBox((text) {
+                  bloc.add(HomePermanantBlockCustomDialogEvent());
+                });
+              });
+        }
+
         if (state is HomeCustomDialogState) {
           showDialog(
               barrierDismissible: false,
               context: context,
               builder: (BuildContext context) {
-                return CustomDialog(ImageResource.tickImage,
-                    "Your PIN has been updated Successfully", "Continue", () {
+                return CustomDialog(
+                    Container(
+                      width: 56,
+                      height: 56,
+                      child: Image(
+                        image: ImageResource.tickImage,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    "Your PIN has been updated Successfully",
+                    "Continue", () {
                   Navigator.pop(context);
                 });
+              });
+        }
+
+        if (state is HomeTemperaryBlockCustomDialogState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return CustomDialog(
+                    Container(
+                      width: 56,
+                      height: 56,
+                      child: Image(
+                        image: ImageResource.tickImage,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    "Your card has been Blocked Temporarily ",
+                    "Continue", () {
+                  setState(() {
+                    bloc.blockTemporary = true;
+                  });
+
+                  Navigator.pop(context);
+                });
+              });
+        }
+
+        if (state is HomePermanantBlockCustomDialogState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return CustomDialog(
+                    Container(
+                      width: 56,
+                      height: 56,
+                      child: Image(
+                        image: ImageResource.tickImage,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    "Your card has been Permanently Blocked ",
+                    "Continue", () {
+                  setState(() {
+                    bloc.blockPermanant = true;
+                  });
+                  Navigator.pop(context);
+                });
+              });
+        }
+
+        if (state is HomePeramanantBlockAlertState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return CustomDialog(
+                  Container(
+                    width: 75,
+                    height: 75,
+                    child: Image(
+                      image: ImageResource.blockCardConformation,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  "Do you want to continue?",
+                  "Yes, Block Card",
+                  () {
+                    Navigator.pop(context);
+                    bloc.add(HomePermanantBlockOtpVerificationEvent());
+                  },
+                  isCancelButtonRequired: true,
+                );
+              });
+        }
+
+        if (state is HomeTemperaryBlockAlertState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return CustomDialog(
+                  Container(
+                    width: 75,
+                    height: 75,
+                    child: Image(
+                      image: ImageResource.blockCardConformation,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  "Do you want to continue?",
+                  "Block Temporarily",
+                  () {
+                    Navigator.pop(context);
+                    bloc.add(HomeTemperaryBlockOtpVerificationEvent());
+                  },
+                  isCancelButtonRequired: true,
+                );
               });
         }
 
@@ -184,6 +318,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                             children: [
                               Container(
                                 width: double.infinity,
+                                height: 200,
                                 child: Image(
                                   image: ImageResource.cardBgImage,
                                   fit: BoxFit.fill,
@@ -191,6 +326,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                               ),
                               Container(
                                 width: double.infinity,
+                                height: 200,
                                 child: Image(
                                   image: ImageResource.wavesImage,
                                   fit: BoxFit.fill,
@@ -221,15 +357,40 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                         )
                                       ],
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
+                                    Container(
+                                      height: 32,
+                                      margin: const EdgeInsets.symmetric(
                                           vertical: 30.0),
-                                      child: CustomText(
-                                        getCardNumber(isSecurityCodeHidden),
-                                        fontSize: 16,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                        letterSpacing: 2,
+                                      child: Row(
+                                        children: [
+                                          CustomText(
+                                            getCardNumber(isSecurityCodeHidden),
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 2,
+                                          ),
+                                          Spacer(),
+                                          if (isSecurityCodeHidden)
+                                            GestureDetector(
+                                              onTap: () {
+                                                Clipboard.setData(ClipboardData(
+                                                    text: cardNumber));
+                                                AppUtils.hideKeyBoard(context);
+                                                AppUtils.showToast(
+                                                    "Cardnumber copied");
+                                              },
+                                              child: Container(
+                                                width: 32,
+                                                height: 32,
+                                                child: Image(
+                                                  image: ImageResource.copy,
+                                                  color: Colors.white,
+                                                  // fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            )
+                                        ],
                                       ),
                                     ),
                                     Row(
@@ -251,7 +412,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                                 color: Colors.white,
                                                 fontSize: 12,
                                               ),
-                                            )
+                                            ),
                                           ],
                                         ),
                                         Padding(
@@ -312,7 +473,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                           ),
                                         )
                                       ],
-                                    )
+                                    ),
                                   ],
                                 ),
                               )
@@ -521,32 +682,89 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
-                          child: Row(
+                          child: Column(
                             children: [
-                              Container(
-                                width: 24,
-                                height: 24,
-                                child: Image(
-                                    image: ImageResource.blockCardImage,
-                                    fit: BoxFit.cover),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 24,
+                                    height: 24,
+                                    child: Image(
+                                        image: ImageResource.blockCardImage,
+                                        fit: BoxFit.cover),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 12.0),
+                                    child: CustomText(
+                                      "Block your Card",
+                                      fontSize: 14,
+                                      color: ColorResource.color1515151
+                                          .withOpacity(0.8),
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        blockCardVisibility =
+                                            !blockCardVisibility;
+                                      });
+                                    },
+                                    child: Container(
+                                      width: 24,
+                                      height: 24,
+                                      child: Image(
+                                          image: blockCardVisibility
+                                              ? ImageResource.upArrowImage
+                                              : ImageResource.downArrowImage,
+                                          fit: BoxFit.cover),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 12.0),
-                                child: CustomText(
-                                  "Block your Card",
-                                  fontSize: 14,
-                                  color: ColorResource.color1515151
-                                      .withOpacity(0.8),
+                              Visibility(
+                                visible: blockCardVisibility,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 20.0),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 12,
+                                      ),
+                                      CustomSwitch(
+                                          "Block Temporarily",
+                                          "Prevents transaction on this Card",
+                                          bloc.blockTemporary, (value) {
+                                        if (value) {
+                                          bloc.add(
+                                              HomeTemperaryBlockAlertEvent());
+                                        } else {
+                                          setState(() {
+                                            bloc.blockTemporary = false;
+                                          });
+                                        }
+                                      }),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      CustomSwitch(
+                                          "Block Permanent",
+                                          "Once blocked, card can’t be used again",
+                                          bloc.blockPermanant, (value) {
+                                        if (value) {
+                                          bloc.add(
+                                              HomePremanantBlockAlertEvent());
+                                        } else {
+                                          setState(() {
+                                            bloc.blockPermanant = false;
+                                          });
+                                        }
+                                      })
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Spacer(),
-                              Container(
-                                width: 24,
-                                height: 24,
-                                child: Image(
-                                    image: ImageResource.downArrowImage,
-                                    fit: BoxFit.cover),
-                              ),
+                              )
                             ],
                           ),
                         ),
