@@ -9,6 +9,7 @@ import 'package:m2pcarddetails/home_screen/bloc/home_event.dart';
 import 'package:m2pcarddetails/utils/apputils.dart';
 import 'package:m2pcarddetails/utils/color_resource.dart';
 import 'package:m2pcarddetails/utils/image_resource.dart';
+import 'package:m2pcarddetails/widget/custom_dialog.dart';
 import 'package:m2pcarddetails/widget/custom_text.dart';
 import 'package:m2pcarddetails/widget/enter_verificationcode_dialog.dart';
 import 'package:m2pcarddetails/widget/plain_textfield.dart';
@@ -98,7 +99,21 @@ class _CardDetailScreenState extends State<CardDetailScreen>
               barrierDismissible: false,
               context: context,
               builder: (BuildContext context) {
-                return ConformPasswordAlertDialog(() {});
+                return EnterVerificationCodeDialogBox((text) {
+                  bloc.add(HomeCustomDialogEvent());
+                });
+              });
+        }
+
+        if (state is HomeCustomDialogState) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return CustomDialog(ImageResource.tickImage,
+                    "Your PIN has been updated Successfully", "Continue", () {
+                  Navigator.pop(context);
+                });
               });
         }
 
@@ -486,7 +501,8 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                           "Set",
                                           isShadowrequired: false,
                                           onClick: () {
-                                            bloc.add(HomeConformmAlertEvent());
+                                            bloc.add(
+                                                HomeEnterVerificationCodeAlertEvent());
                                           },
                                         ),
                                       )

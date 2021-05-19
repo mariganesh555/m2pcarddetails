@@ -15,7 +15,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
-    if (event is HomeConformmAlertEvent) {
+    if (event is HomeEnterVerificationCodeAlertEvent) {
       final dobStatus = Validator.validate(dobTextController.text.trim(),
           rules: ['required']);
       if (!dobStatus.status) {
@@ -41,6 +41,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
 
       yield HomeConformOtpAlertState();
+    }
+
+    if (event is HomeCustomDialogEvent) {
+      yield HomeCustomDialogState();
     }
   }
 }

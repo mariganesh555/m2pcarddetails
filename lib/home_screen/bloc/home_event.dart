@@ -4,4 +4,6 @@ class HomeEvent extends BaseEquatable {}
 
 class HomeInitialEvent extends HomeEvent {}
 
-class HomeConformmAlertEvent extends HomeEvent {}
+class HomeEnterVerificationCodeAlertEvent extends HomeEvent {}
+
+class HomeCustomDialogEvent extends HomeEvent {}

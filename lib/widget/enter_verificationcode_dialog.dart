@@ -1,33 +1,29 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:m2pcarddetails/utils/apputils.dart';
 import 'package:m2pcarddetails/utils/color_resource.dart';
-import 'package:m2pcarddetails/utils/font.dart';
 import 'package:m2pcarddetails/utils/image_resource.dart';
 import 'package:m2pcarddetails/utils/string_resource.dart';
 import 'package:m2pcarddetails/widget/custom_text.dart';
 import 'package:m2pcarddetails/widget/primary_button.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class ConformPasswordAlertDialog extends StatefulWidget {
+class EnterVerificationCodeDialogBox extends StatefulWidget {
   TextEditingController passwordTextController = TextEditingController();
   Function onProceedTapped;
 
-  ConformPasswordAlertDialog(this.onProceedTapped);
+  EnterVerificationCodeDialogBox(this.onProceedTapped);
 
   GlobalKey<FormFieldState<String>> searchFormKey =
       GlobalKey<FormFieldState<String>>();
-
   @override
-  _ConformPasswordAlertDialogState createState() =>
-      _ConformPasswordAlertDialogState();
+  _EnterVerificationCodeDialogBoxState createState() =>
+      _EnterVerificationCodeDialogBoxState();
 }
 
-class _ConformPasswordAlertDialogState
-    extends State<ConformPasswordAlertDialog> {
+class _EnterVerificationCodeDialogBoxState
+    extends State<EnterVerificationCodeDialogBox> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -95,24 +91,25 @@ class _ConformPasswordAlertDialogState
                   ],
                 ),
               ),
-              // Container(
-              //   decoration: BoxDecoration(
-              //       borderRadius: BorderRadius.circular(10),
-              //       border: Border.all(
-              //         color: ColorResource.colorb9b9bf,
-              //       )),
-              //   child: OTPTextField(
-              //     length: 5,
-              //     width: MediaQuery.of(context).size.width,
-              //     fieldWidth: 80,
-              //     style: TextStyle(fontSize: 17),
-              //     textFieldAlignment: MainAxisAlignment.spaceAround,
-              //     fieldStyle: FieldStyle.underline,
-              //     onCompleted: (pin) {
-              //       print("Completed: " + pin);
-              //     },
-              //   ),
-              // ),
+              otpTextField(),
+              GestureDetector(
+                onTap: () {
+                  AppUtils.hideKeyBoard(context);
+                  AppUtils.showToast("OTP sent to registered mobile number");
+                },
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 0),
+                    child: CustomText(
+                      "Resend OTP",
+                      fontSize: 10,
+                      color: ColorResource.color4C7DFF,
+                      isUnderLine: true,
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(
                 height: 22,
               ),
@@ -120,7 +117,7 @@ class _ConformPasswordAlertDialogState
                 child: PrimaryButton(
                   "Verify",
                   onClick: () {
-                    if (widget.passwordTextController.text.isNotEmpty) {
+                    if (widget.passwordTextController.text.length == 4) {
                       widget.onProceedTapped(
                           widget.passwordTextController.text.trim());
                       Navigator.pop(context);
@@ -165,39 +162,46 @@ class _ConformPasswordAlertDialogState
     );
   }
 
-  // Widget otpTextField() {
-  //   return PinCodeTextField(
-  //     appContext: context,
-  //     length: 6,
-  //     obscureText: false,
-  //     animationType: AnimationType.fade,
-  //     pinTheme: PinTheme(
-  //       shape: PinCodeFieldShape.box,
-  //       borderRadius: BorderRadius.circular(5),
-  //       fieldHeight: 50,
-  //       fieldWidth: 40,
-  //       activeFillColor: Colors.white,
-  //     ),
-  //     animationDuration: Duration(milliseconds: 300),
-  //     backgroundColor: Colors.blue.shade50,
-  //     enableActiveFill: true,
-  //     // errorAnimationController: errorController,
-  //     // controller: textEditingController,
-  //     onCompleted: (v) {
-  //       print("Completed");
-  //     },
-  //     onChanged: (value) {
-  //       print(value);
-  //       setState(() {
-  //         // currentText = value;
-  //       });
-  //     },
-  //     beforeTextPaste: (text) {
-  //       print("Allowing to paste $text");
-  //       //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
-  //       //but you can show anything you want here, like your pop up saying wrong paste format or etc
-  //       return true;
-  //     },
-  //   );
-  // }
+  Widget otpTextField() {
+    return PinCodeTextField(
+      appContext: context,
+      length: 4,
+      obscureText: false,
+      animationType: AnimationType.fade,
+      autoDismissKeyboard: true,
+      keyboardType: TextInputType.number,
+
+      pinTheme: PinTheme(
+          shape: PinCodeFieldShape.box,
+          borderRadius: BorderRadius.circular(10),
+          fieldHeight: 50,
+          fieldWidth: 50,
+          activeFillColor: Colors.white,
+          activeColor: ColorResource.colorEEEEEE,
+          inactiveColor: ColorResource.colorEEEEEE,
+          inactiveFillColor: Colors.white,
+          selectedColor: ColorResource.colorEEEEEE,
+          selectedFillColor: Colors.white,
+          disabledColor: Colors.white),
+      animationDuration: Duration(milliseconds: 300),
+      backgroundColor: Colors.transparent,
+
+      enableActiveFill: true,
+      // errorAnimationController: errorController,
+      controller: widget.passwordTextController,
+      onCompleted: (v) {},
+      onChanged: (value) {
+        print(value);
+        setState(() {
+          // currentText = value;
+        });
+      },
+      beforeTextPaste: (text) {
+        print("Allowing to paste $text");
+        //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+        //but you can show anything you want here, like your pop up saying wrong paste format or etc
+        return true;
+      },
+    );
+  }
 }

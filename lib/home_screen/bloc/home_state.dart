@@ -14,3 +14,5 @@ class HomeErrorState extends HomeState {
 }
 
 class HomeConformOtpAlertState extends HomeState {}
+
+class HomeCustomDialogState extends HomeState {}
