@@ -13,6 +13,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   TextEditingController conformPinTextController = TextEditingController();
   TextEditingController securityCodeTextController = TextEditingController();
 
+  TextEditingController atmLimitTextController = TextEditingController();
+  TextEditingController posLimitTextController = TextEditingController();
+  TextEditingController ecomLimitTextController = TextEditingController();
+
   bool blockTemporary = false;
   bool blockPermanant = false;
 
@@ -21,6 +25,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   bool ecomTransactions = false;
   bool internationalTransactions = false;
   bool contactlessTransactions = false;
+
+  bool atmTransactionsLimit = false;
+  bool posTransactionsLimit = false;
+  bool ecomTransactionsLimit = false;
+
+  String atmLimit = "";
+  String posLimit = "";
+  String ecomlimit = "";
 
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {

@@ -48,4 +48,16 @@ class ImageResource {
 
   static const unlock =
       AssetImage('assets/images/unlock.png', package: 'm2pcarddetails');
+
+  static const atm =
+      AssetImage('assets/images/atm.png', package: 'm2pcarddetails');
+
+  static const pos =
+      AssetImage('assets/images/pos.png', package: 'm2pcarddetails');
+
+  static const ecom =
+      AssetImage('assets/images/ecom.png', package: 'm2pcarddetails');
+
+  static const edit =
+      AssetImage('assets/images/edit.png', package: 'm2pcarddetails');    
 }

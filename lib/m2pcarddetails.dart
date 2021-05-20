@@ -11,12 +11,14 @@ import 'package:m2pcarddetails/home_screen/bloc/home_event.dart';
 import 'package:m2pcarddetails/utils/apputils.dart';
 import 'package:m2pcarddetails/utils/color_resource.dart';
 import 'package:m2pcarddetails/utils/image_resource.dart';
+import 'package:m2pcarddetails/utils/time_utils.dart';
 import 'package:m2pcarddetails/widget/custom_dialog.dart';
 import 'package:m2pcarddetails/widget/custom_switch.dart';
 import 'package:m2pcarddetails/widget/custom_text.dart';
 import 'package:m2pcarddetails/widget/enter_verificationcode_dialog.dart';
 import 'package:m2pcarddetails/widget/plain_textfield.dart';
 import 'package:m2pcarddetails/widget/primary_button.dart';
+import 'package:m2pcarddetails/widget/transaction_limit_widget.dart';
 
 import 'home_screen/bloc/home_state.dart';
 
@@ -330,7 +332,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                       fit: BoxFit.cover,
                     ),
                   ),
-                  "Do you want to continue?",
+                  "You cannot undo this action. Do you want to continue?",
                   "Yes, Block Card",
                   () {
                     Navigator.pop(context);
@@ -355,7 +357,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                       fit: BoxFit.cover,
                     ),
                   ),
-                  "Do you want to continue?",
+                  "You cannot undo this action. Do you want to continue?",
                   "Block Temporarily",
                   () {
                     Navigator.pop(context);
@@ -751,13 +753,32 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                   child: Column(
                                     children: [
                                       PlainTextField(
-                                          "DOB", bloc.dobTextController),
+                                        "DOB",
+                                        bloc.dobTextController,
+                                        isReadOnly: true,
+                                        onTapped: () {
+                                          showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime.now(),
+                                          ).then((value) {
+                                            setState(() {
+                                              bloc.dobTextController.text =
+                                                  TimeUtils
+                                                      .convertdateTimeToDDMMMYYYY(
+                                                          value);
+                                            });
+                                          });
+                                        },
+                                      ),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 16.0),
                                         child: PlainTextField(
                                           "Enter PIN",
                                           bloc.enterPinTextController,
+                                          obscureText: true,
                                           keyBoardType:
                                               TextInputType.numberWithOptions(
                                                   signed: true),
@@ -766,6 +787,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                       PlainTextField(
                                         "Confirm PIN",
                                         bloc.conformPinTextController,
+                                        obscureText: true,
                                         keyBoardType:
                                             TextInputType.numberWithOptions(
                                                 signed: true),
@@ -943,9 +965,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                       SizedBox(
                                         height: 12,
                                       ),
-                                      CustomSwitch(
-                                          "ATM Transactions",
-                                          "${!bloc.atmTransactions ? "Enable" : "Lock"} atm transactions",
+                                      CustomSwitch("ATM Transactions", null,
                                           bloc.atmTransactions, (value) {
                                         if (value) {
                                           bloc.add(
@@ -958,11 +978,9 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                         }
                                       }),
                                       SizedBox(
-                                        height: 30,
+                                        height: 20,
                                       ),
-                                      CustomSwitch(
-                                          "POS Transactions",
-                                          "${!bloc.posTransactions ? "Enable" : "Lock"} POS transactions",
+                                      CustomSwitch("POS Transactions", null,
                                           bloc.posTransactions, (value) {
                                         if (value) {
                                           bloc.add(
@@ -975,11 +993,9 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                         }
                                       }),
                                       SizedBox(
-                                        height: 30,
+                                        height: 20,
                                       ),
-                                      CustomSwitch(
-                                          "Ecom Transactions",
-                                          "${!bloc.ecomTransactions ? "Enable" : "Lock"} Ecom transactions",
+                                      CustomSwitch("Ecom Transactions", null,
                                           bloc.ecomTransactions, (value) {
                                         if (value) {
                                           bloc.add(
@@ -992,12 +1008,10 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                         }
                                       }),
                                       SizedBox(
-                                        height: 30,
+                                        height: 20,
                                       ),
-                                      CustomSwitch(
-                                          "International Transactions",
-                                          "${!bloc.internationalTransactions ? "Enable" : "Lock"} International Transactions",
-                                          bloc.internationalTransactions,
+                                      CustomSwitch("International Transactions",
+                                          null, bloc.internationalTransactions,
                                           (value) {
                                         if (value) {
                                           bloc.add(HomeCardLockCustomDialogEvent(
@@ -1009,12 +1023,10 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                         }
                                       }),
                                       SizedBox(
-                                        height: 30,
+                                        height: 20,
                                       ),
-                                      CustomSwitch(
-                                          "Contactless Transaction",
-                                          "${!bloc.contactlessTransactions ? "Enable" : "Lock"} Contactless Transaction",
-                                          bloc.contactlessTransactions,
+                                      CustomSwitch("Contactless Transaction",
+                                          null, bloc.contactlessTransactions,
                                           (value) {
                                         if (value) {
                                           bloc.add(
@@ -1039,14 +1051,88 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                 ),
 
                 // second tab bar viiew widget
-                Container(
-                  color: Colors.pink,
-                  child: Center(
-                    child: Text(
-                      'Car',
-                    ),
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 0.0, horizontal: 9),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 12,
+                            ),
+                            TransactionLimitWidget(
+                                "ATM Transactions",
+                                bloc.atmTransactionsLimit,
+                                (value) {
+                                  setState(() {
+                                    bloc.atmTransactionsLimit = value;
+                                  });
+                                },
+                                Container(
+                                  width: 24,
+                                  height: 24,
+                                  child: Image(image: ImageResource.atm),
+                                ),
+                                bloc.atmLimitTextController,
+                                (limit) {
+                                  // setState(() {
+                                  //   bloc.atmLimit = limit;
+                                  // });
+                                },
+                                bloc.atmLimit),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            TransactionLimitWidget(
+                                "POS Transactions",
+                                bloc.posTransactionsLimit,
+                                (value) {
+                                  bloc.posTransactionsLimit = value;
+                                },
+                                Container(
+                                  width: 20,
+                                  height: 15,
+                                  child: Image(image: ImageResource.pos),
+                                ),
+                                bloc.posLimitTextController,
+                                (limit) {
+                                  // setState(() {
+                                  //   bloc.posLimit = limit;
+                                  // });
+                                },
+                                bloc.posLimit),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            TransactionLimitWidget(
+                                "Ecom Transactions",
+                                bloc.ecomTransactionsLimit,
+                                (value) {
+                                  bloc.ecomTransactionsLimit = value;
+                                },
+                                Container(
+                                  width: 24,
+                                  height: 24,
+                                  child: Image(image: ImageResource.ecom),
+                                ),
+                                bloc.ecomLimitTextController,
+                                (limit) {
+                                  // setState(() {
+                                  //   bloc.ecomlimit = limit;
+                                  // });
+                                },
+                                bloc.ecomlimit),
+                            SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                )
               ],
             ),
           )

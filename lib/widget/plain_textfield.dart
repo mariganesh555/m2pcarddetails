@@ -68,7 +68,9 @@ class _PlainTextFieldState extends State<PlainTextField> {
             )),
         child: TextField(
           textInputAction: TextInputAction.done,
-          onTap: () {},
+          onTap: () {
+            if (widget.onTapped != null) widget.onTapped();
+          },
           inputFormatters: [],
           // inputFormatters: [
           //   if (widget.maximumWordCount != null)

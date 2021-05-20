@@ -29,14 +29,16 @@ class _CustomSwitchState extends State<CustomSwitch> {
               fontWeight: FontWeight.w600,
               color: ColorResource.color1515151.withOpacity(0.8),
             ),
-            SizedBox(
-              height: 6,
-            ),
-            CustomText(
-              widget.subTitle,
-              fontSize: 12,
-              color: ColorResource.color1515151.withOpacity(0.4),
-            ),
+            if (widget.subTitle != null)
+              SizedBox(
+                height: 6,
+              ),
+            if (widget.subTitle != null)
+              CustomText(
+                widget.subTitle,
+                fontSize: 12,
+                color: ColorResource.color1515151.withOpacity(0.4),
+              ),
           ],
         ),
         Spacer(),
