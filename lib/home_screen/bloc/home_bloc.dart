@@ -61,6 +61,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         return;
       }
 
+      if (enterPinTextController.text.trim() !=
+          conformPinTextController.text.trim()) {
+        yield HomeErrorState("PIN Mismatch");
+        return;
+      }
+
       yield HomeConformOtpAlertState();
     }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:m2pcarddetails/utils/color_resource.dart';
 import 'package:m2pcarddetails/utils/font.dart';
 
@@ -71,11 +72,11 @@ class _PlainTextFieldState extends State<PlainTextField> {
           onTap: () {
             if (widget.onTapped != null) widget.onTapped();
           },
-          inputFormatters: [],
-          // inputFormatters: [
-          //   if (widget.maximumWordCount != null)
-          //     LengthLimitingTextInputFormatter(widget.maximumWordCount),
-          // ],
+
+          inputFormatters: [
+            if (widget.maximumWordCount != null)
+              LengthLimitingTextInputFormatter(widget.maximumWordCount),
+          ],
           onSubmitted: (t) {
             // widget.focusNode.unfocus();
             // FocusScope.of(context).requestFocus(widget.focusNode);

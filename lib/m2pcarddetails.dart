@@ -37,7 +37,7 @@ class CardDetailScreen extends StatefulWidget {
 }
 
 class _CardDetailScreenState extends State<CardDetailScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, TickerProviderStateMixin {
   bool isSecurityCodeHidden = true;
 
   String cardNumber = "6666989045907890";
@@ -378,169 +378,155 @@ class _CardDetailScreenState extends State<CardDetailScreen>
             return Scaffold(
               backgroundColor: Color.fromRGBO(250, 250, 250, 1),
               body: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 22.0,
-                          ),
-                          child: CustomText(
-                            "Virtual Card",
-                            fontSize: 16,
-                            color: ColorResource.color1515151,
-                            fontWeight: FontWeight.w600,
-                          ),
+                child: Container(
+                  color: Colors.transparent,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 22.0,
+                              ),
+                              child: CustomText(
+                                "Virtual Card",
+                                fontSize: 16,
+                                color: ColorResource.color1515151,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Spacer(),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 20),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 19.5,
+                                      height: 19.5,
+                                      child: Image(
+                                          image: ImageResource.cancelImage,
+                                          fit: BoxFit.cover),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    CustomText(
+                                      "Close",
+                                      fontSize: 13,
+                                      color: ColorResource.color1515151
+                                          .withOpacity(0.5),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 20),
-                            child: Row(
+                      ),
+                      Container(
+                        margin: const EdgeInsets.all(20.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(25),
+                          child: Container(
+                            width: double.infinity,
+                            child: Stack(
                               children: [
                                 Container(
-                                  width: 19.5,
-                                  height: 19.5,
+                                  width: double.infinity,
+                                  height: 200,
                                   child: Image(
-                                      image: ImageResource.cancelImage,
-                                      fit: BoxFit.cover),
+                                    image: ImageResource.cardBgImage,
+                                    fit: BoxFit.fill,
+                                  ),
                                 ),
-                                SizedBox(
-                                  width: 5,
+                                Container(
+                                  width: double.infinity,
+                                  height: 200,
+                                  child: Image(
+                                    image: ImageResource.wavesImage,
+                                    fit: BoxFit.fill,
+                                  ),
                                 ),
-                                CustomText(
-                                  "Close",
-                                  fontSize: 13,
-                                  color: ColorResource.color1515151
-                                      .withOpacity(0.5),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      margin: const EdgeInsets.all(20.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(25),
-                        child: Container(
-                          width: double.infinity,
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                height: 200,
-                                child: Image(
-                                  image: ImageResource.cardBgImage,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                height: 200,
-                                child: Image(
-                                  image: ImageResource.wavesImage,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 30.0, left: 16, right: 16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        CustomText(
-                                          widget.tenatname,
-                                          fontSize: 15,
-                                          color: Colors.white,
-                                        ),
-                                        Spacer(),
-                                        Container(
-                                          width: 44,
-                                          height: 28,
-                                          child: Image(
-                                              image:
-                                                  ImageResource.tenetBgImage),
-                                        )
-                                      ],
-                                    ),
-                                    Container(
-                                      height: 32,
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 30.0),
-                                      child: Row(
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 30.0, left: 16, right: 16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           CustomText(
-                                            getCardNumber(isSecurityCodeHidden),
-                                            fontSize: 16,
+                                            widget.tenatname,
+                                            fontSize: 15,
                                             color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 2,
                                           ),
                                           Spacer(),
-                                          if (isSecurityCodeHidden)
-                                            GestureDetector(
-                                              onTap: () {
-                                                Clipboard.setData(ClipboardData(
-                                                    text: cardNumber));
-                                                AppUtils.hideKeyBoard(context);
-                                                AppUtils.showToast(
-                                                    "Cardnumber copied");
-                                              },
-                                              child: Container(
-                                                width: 32,
-                                                height: 32,
-                                                child: Image(
-                                                  image: ImageResource.copy,
-                                                  color: Colors.white,
-                                                  // fit: BoxFit.contain,
-                                                ),
-                                              ),
-                                            )
+                                          Container(
+                                            width: 44,
+                                            height: 28,
+                                            child: Image(
+                                                image:
+                                                    ImageResource.tenetBgImage),
+                                          )
                                         ],
                                       ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                      Container(
+                                        height: 32,
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 30.0),
+                                        child: Row(
                                           children: [
                                             CustomText(
-                                              "Valid Thru ",
+                                              getCardNumber(
+                                                  isSecurityCodeHidden),
+                                              fontSize: 16,
                                               color: Colors.white,
-                                              fontSize: 9,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 2,
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 6.0),
-                                              child: CustomText(
-                                                expiryDate,
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                              ),
-                                            ),
+                                            Spacer(),
+                                            if (isSecurityCodeHidden)
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Clipboard.setData(
+                                                      ClipboardData(
+                                                          text: cardNumber));
+                                                  AppUtils.hideKeyBoard(
+                                                      context);
+                                                  AppUtils.showToast(
+                                                      "Cardnumber copied");
+                                                },
+                                                child: Container(
+                                                  width: 32,
+                                                  height: 32,
+                                                  child: Image(
+                                                    image: ImageResource.copy,
+                                                    color: Colors.white,
+                                                    // fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                              )
                                           ],
                                         ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 50.0),
-                                          child: Column(
+                                      ),
+                                      Row(
+                                        children: [
+                                          Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
                                               CustomText(
-                                                "CVV",
+                                                "Valid Thru ",
                                                 color: Colors.white,
                                                 fontSize: 9,
                                               ),
@@ -548,76 +534,102 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                                 padding: const EdgeInsets.only(
                                                     top: 6.0),
                                                 child: CustomText(
-                                                  bloc.securityCodeTextController
-                                                      .text,
+                                                  expiryDate,
                                                   color: Colors.white,
                                                   fontSize: 12,
                                                 ),
-                                              )
+                                              ),
                                             ],
                                           ),
-                                        ),
-                                        Spacer(),
-                                        InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              isSecurityCodeHidden =
-                                                  !isSecurityCodeHidden;
-                                              if (isSecurityCodeHidden) {
-                                                bloc.securityCodeTextController
-                                                    .text = "***";
-                                              } else {
-                                                bloc.securityCodeTextController
-                                                    .text = securityCode;
-                                              }
-                                            });
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.grey),
-                                                color: Colors.transparent,
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                            padding: const EdgeInsets.all(10),
-                                            child: CustomText(
-                                              isSecurityCodeHidden
-                                                  ? "View CVV"
-                                                  : "Hide CVV",
-                                              fontSize: 10,
-                                              color: Colors.white,
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 50.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                CustomText(
+                                                  "CVV",
+                                                  color: Colors.white,
+                                                  fontSize: 9,
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 6.0),
+                                                  child: CustomText(
+                                                    bloc.securityCodeTextController
+                                                        .text,
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                  ),
+                                                )
+                                              ],
                                             ),
                                           ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
+                                          Spacer(),
+                                          InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                isSecurityCodeHidden =
+                                                    !isSecurityCodeHidden;
+                                                if (isSecurityCodeHidden) {
+                                                  bloc.securityCodeTextController
+                                                      .text = "***";
+                                                } else {
+                                                  bloc.securityCodeTextController
+                                                      .text = securityCode;
+                                                }
+                                              });
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: Colors.grey),
+                                                  color: Colors.transparent,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
+                                              padding: const EdgeInsets.all(10),
+                                              child: CustomText(
+                                                isSecurityCodeHidden
+                                                    ? "View CVV"
+                                                    : "Hide CVV",
+                                                fontSize: 10,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: _buildTabBar(),
-                    )),
-                    Container(
-                      width: double.infinity,
-                      height: 28,
-                      color: Colors.white,
-                      child: Center(
-                        child: CustomText(
-                          "The Screen will automatically close in $pendingSeconds sec",
-                          fontSize: 9,
-                          fontWeight: FontWeight.w400,
-                          color: ColorResource.colorEB001C,
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: _buildTabBar(),
+                      )),
+                      Container(
+                        width: double.infinity,
+                        height: 28,
+                        color: Colors.white,
+                        child: Center(
+                          child: CustomText(
+                            "The Screen will automatically close in $pendingSeconds sec",
+                            fontSize: 9,
+                            fontWeight: FontWeight.w400,
+                            color: ColorResource.colorEB001C,
+                          ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             );
@@ -746,65 +758,76 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                   ),
                                 ],
                               ),
-                              Visibility(
-                                visible: setpinVisibility,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Column(
-                                    children: [
-                                      PlainTextField(
-                                        "DOB",
-                                        bloc.dobTextController,
-                                        isReadOnly: true,
-                                        onTapped: () {
-                                          showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime.now(),
-                                          ).then((value) {
-                                            setState(() {
-                                              bloc.dobTextController.text =
-                                                  TimeUtils
-                                                      .convertdateTimeToDDMMMYYYY(
-                                                          value);
-                                            });
-                                          });
-                                        },
+                              AnimatedSize(
+                                vsync: this,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.fastOutSlowIn,
+                                child: Container(
+                                  color: Colors.white,
+                                  // height: setpinVisibility ? 270 : 0,
+                                  child: Visibility(
+                                    visible: setpinVisibility,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        children: [
+                                          PlainTextField(
+                                            "DOB",
+                                            bloc.dobTextController,
+                                            isReadOnly: true,
+                                            onTapped: () {
+                                              showDatePicker(
+                                                context: context,
+                                                initialDate: DateTime.now(),
+                                                firstDate: DateTime(1900),
+                                                lastDate: DateTime.now(),
+                                              ).then((value) {
+                                                setState(() {
+                                                  bloc.dobTextController.text =
+                                                      TimeUtils
+                                                          .convertdateTimeToDDMMMYYYY(
+                                                              value);
+                                                });
+                                              });
+                                            },
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 16.0),
+                                            child: PlainTextField(
+                                              "Enter PIN",
+                                              bloc.enterPinTextController,
+                                              obscureText: true,
+                                              maximumWordCount: 4,
+                                              keyBoardType: TextInputType
+                                                  .numberWithOptions(
+                                                      signed: true),
+                                            ),
+                                          ),
+                                          PlainTextField(
+                                            "Confirm PIN",
+                                            bloc.conformPinTextController,
+                                            obscureText: true,
+                                            maximumWordCount: 4,
+                                            keyBoardType:
+                                                TextInputType.numberWithOptions(
+                                                    signed: true),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 16.0),
+                                            child: PrimaryButton(
+                                              "Set",
+                                              isShadowrequired: false,
+                                              onClick: () {
+                                                bloc.add(
+                                                    HomeEnterVerificationCodeAlertEvent());
+                                              },
+                                            ),
+                                          )
+                                        ],
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 16.0),
-                                        child: PlainTextField(
-                                          "Enter PIN",
-                                          bloc.enterPinTextController,
-                                          obscureText: true,
-                                          keyBoardType:
-                                              TextInputType.numberWithOptions(
-                                                  signed: true),
-                                        ),
-                                      ),
-                                      PlainTextField(
-                                        "Confirm PIN",
-                                        bloc.conformPinTextController,
-                                        obscureText: true,
-                                        keyBoardType:
-                                            TextInputType.numberWithOptions(
-                                                signed: true),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 16.0),
-                                        child: PrimaryButton(
-                                          "Set",
-                                          isShadowrequired: false,
-                                          onClick: () {
-                                            bloc.add(
-                                                HomeEnterVerificationCodeAlertEvent());
-                                          },
-                                        ),
-                                      )
-                                    ],
+                                    ),
                                   ),
                                 ),
                               )
@@ -859,44 +882,49 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                   ),
                                 ],
                               ),
-                              Visibility(
-                                visible: blockCardVisibility,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 20.0),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 12,
-                                      ),
-                                      CustomSwitch(
-                                          "Block Temporarily",
-                                          "Prevents transaction on this Card",
-                                          bloc.blockTemporary, (value) {
-                                        if (value) {
-                                          bloc.add(
-                                              HomeTemperaryBlockAlertEvent());
-                                        } else {
-                                          bloc.add(
-                                              HomeTemperaryUnBlockOtpVerificationEvent());
-                                        }
-                                      }),
-                                      SizedBox(
-                                        height: 30,
-                                      ),
-                                      CustomSwitch(
-                                          "Block Permanent",
-                                          "Once blocked, card can’t be used again",
-                                          bloc.blockPermanant, (value) {
-                                        if (value) {
-                                          bloc.add(
-                                              HomePremanantBlockAlertEvent());
-                                        } else {
-                                          bloc.add(
-                                              HomePermanantUnBlockOtpVerificationEvent());
-                                        }
-                                      })
-                                    ],
+                              AnimatedSize(
+                                vsync: this,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.fastOutSlowIn,
+                                child: Visibility(
+                                  visible: blockCardVisibility,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20.0),
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 12,
+                                        ),
+                                        CustomSwitch(
+                                            "Block Temporarily",
+                                            "Prevents transaction on this Card",
+                                            bloc.blockTemporary, (value) {
+                                          if (value) {
+                                            bloc.add(
+                                                HomeTemperaryBlockAlertEvent());
+                                          } else {
+                                            bloc.add(
+                                                HomeTemperaryUnBlockOtpVerificationEvent());
+                                          }
+                                        }),
+                                        SizedBox(
+                                          height: 30,
+                                        ),
+                                        CustomSwitch(
+                                            "Block Permanent",
+                                            "Once blocked, card can’t be used again",
+                                            bloc.blockPermanant, (value) {
+                                          if (value) {
+                                            bloc.add(
+                                                HomePremanantBlockAlertEvent());
+                                          } else {
+                                            bloc.add(
+                                                HomePermanantUnBlockOtpVerificationEvent());
+                                          }
+                                        })
+                                      ],
+                                    ),
                                   ),
                                 ),
                               )
@@ -955,90 +983,97 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                   ),
                                 ],
                               ),
-                              Visibility(
-                                visible: cardPreferenceVisibility,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 20.0),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 12,
-                                      ),
-                                      CustomSwitch("ATM Transactions", null,
-                                          bloc.atmTransactions, (value) {
-                                        if (value) {
-                                          bloc.add(
-                                              HomeCardLockCustomDialogEvent(
-                                                  "ATM Transactions"));
-                                        } else {
-                                          bloc.add(
-                                              HomeCardUnLockCustomDialogEvent(
-                                                  "ATM Transactions"));
-                                        }
-                                      }),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      CustomSwitch("POS Transactions", null,
-                                          bloc.posTransactions, (value) {
-                                        if (value) {
-                                          bloc.add(
-                                              HomeCardLockCustomDialogEvent(
-                                                  "POS Transactions"));
-                                        } else {
-                                          bloc.add(
-                                              HomeCardUnLockCustomDialogEvent(
-                                                  "POS Transactions"));
-                                        }
-                                      }),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      CustomSwitch("Ecom Transactions", null,
-                                          bloc.ecomTransactions, (value) {
-                                        if (value) {
-                                          bloc.add(
-                                              HomeCardLockCustomDialogEvent(
-                                                  "Ecom Transactions"));
-                                        } else {
-                                          bloc.add(
-                                              HomeCardUnLockCustomDialogEvent(
-                                                  "Ecom Transactions"));
-                                        }
-                                      }),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      CustomSwitch("International Transactions",
-                                          null, bloc.internationalTransactions,
-                                          (value) {
-                                        if (value) {
-                                          bloc.add(HomeCardLockCustomDialogEvent(
-                                              "International Transactions"));
-                                        } else {
-                                          bloc.add(
-                                              HomeCardUnLockCustomDialogEvent(
-                                                  "International Transactions"));
-                                        }
-                                      }),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      CustomSwitch("Contactless Transaction",
-                                          null, bloc.contactlessTransactions,
-                                          (value) {
-                                        if (value) {
-                                          bloc.add(
-                                              HomeCardLockCustomDialogEvent(
-                                                  "Contactless Transaction"));
-                                        } else {
-                                          bloc.add(
-                                              HomeCardUnLockCustomDialogEvent(
-                                                  "Contactless Transaction"));
-                                        }
-                                      })
-                                    ],
+                              AnimatedSize(
+                                vsync: this,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.fastOutSlowIn,
+                                child: Visibility(
+                                  visible: cardPreferenceVisibility,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20.0),
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 12,
+                                        ),
+                                        CustomSwitch("ATM Transactions", null,
+                                            bloc.atmTransactions, (value) {
+                                          if (value) {
+                                            bloc.add(
+                                                HomeCardLockCustomDialogEvent(
+                                                    "ATM Transactions"));
+                                          } else {
+                                            bloc.add(
+                                                HomeCardUnLockCustomDialogEvent(
+                                                    "ATM Transactions"));
+                                          }
+                                        }),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        CustomSwitch("POS Transactions", null,
+                                            bloc.posTransactions, (value) {
+                                          if (value) {
+                                            bloc.add(
+                                                HomeCardLockCustomDialogEvent(
+                                                    "POS Transactions"));
+                                          } else {
+                                            bloc.add(
+                                                HomeCardUnLockCustomDialogEvent(
+                                                    "POS Transactions"));
+                                          }
+                                        }),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        CustomSwitch("Ecom Transactions", null,
+                                            bloc.ecomTransactions, (value) {
+                                          if (value) {
+                                            bloc.add(
+                                                HomeCardLockCustomDialogEvent(
+                                                    "Ecom Transactions"));
+                                          } else {
+                                            bloc.add(
+                                                HomeCardUnLockCustomDialogEvent(
+                                                    "Ecom Transactions"));
+                                          }
+                                        }),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        CustomSwitch(
+                                            "International Transactions",
+                                            null,
+                                            bloc.internationalTransactions,
+                                            (value) {
+                                          if (value) {
+                                            bloc.add(HomeCardLockCustomDialogEvent(
+                                                "International Transactions"));
+                                          } else {
+                                            bloc.add(
+                                                HomeCardUnLockCustomDialogEvent(
+                                                    "International Transactions"));
+                                          }
+                                        }),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        CustomSwitch("Contactless Transaction",
+                                            null, bloc.contactlessTransactions,
+                                            (value) {
+                                          if (value) {
+                                            bloc.add(
+                                                HomeCardLockCustomDialogEvent(
+                                                    "Contactless Transaction"));
+                                          } else {
+                                            bloc.add(
+                                                HomeCardUnLockCustomDialogEvent(
+                                                    "Contactless Transaction"));
+                                          }
+                                        })
+                                      ],
+                                    ),
                                   ),
                                 ),
                               )
@@ -1063,67 +1098,67 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                               height: 12,
                             ),
                             TransactionLimitWidget(
-                                "ATM Transactions",
-                                bloc.atmTransactionsLimit,
-                                (value) {
-                                  setState(() {
-                                    bloc.atmTransactionsLimit = value;
-                                  });
-                                },
-                                Container(
-                                  width: 24,
-                                  height: 24,
-                                  child: Image(image: ImageResource.atm),
-                                ),
-                                bloc.atmLimitTextController,
-                                (limit) {
-                                  // setState(() {
-                                  //   bloc.atmLimit = limit;
-                                  // });
-                                },
-                                bloc.atmLimit),
+                              "ATM Transactions",
+                              bloc.atmTransactionsLimit,
+                              (value) {
+                                setState(() {
+                                  bloc.atmTransactionsLimit = value;
+                                });
+                              },
+                              Container(
+                                width: 24,
+                                height: 24,
+                                child: Image(image: ImageResource.atm),
+                              ),
+                              bloc.atmLimitTextController,
+                              (limit) {
+                                // setState(() {
+                                //   bloc.atmLimit = limit;
+                                // });
+                              },
+                            ),
                             SizedBox(
                               height: 20,
                             ),
                             TransactionLimitWidget(
-                                "POS Transactions",
-                                bloc.posTransactionsLimit,
-                                (value) {
-                                  bloc.posTransactionsLimit = value;
-                                },
-                                Container(
-                                  width: 20,
-                                  height: 15,
-                                  child: Image(image: ImageResource.pos),
-                                ),
-                                bloc.posLimitTextController,
-                                (limit) {
-                                  // setState(() {
-                                  //   bloc.posLimit = limit;
-                                  // });
-                                },
-                                bloc.posLimit),
+                              "POS Transactions",
+                              bloc.posTransactionsLimit,
+                              (value) {
+                                bloc.posTransactionsLimit = value;
+                              },
+                              Container(
+                                width: 20,
+                                height: 15,
+                                child: Image(image: ImageResource.pos),
+                              ),
+                              bloc.posLimitTextController,
+                              (limit) {
+                                // setState(() {
+                                //   bloc.posLimit = limit;
+                                // });
+                              },
+                            ),
                             SizedBox(
                               height: 20,
                             ),
                             TransactionLimitWidget(
-                                "Ecom Transactions",
-                                bloc.ecomTransactionsLimit,
-                                (value) {
-                                  bloc.ecomTransactionsLimit = value;
-                                },
-                                Container(
-                                  width: 24,
-                                  height: 24,
-                                  child: Image(image: ImageResource.ecom),
-                                ),
-                                bloc.ecomLimitTextController,
-                                (limit) {
-                                  // setState(() {
-                                  //   bloc.ecomlimit = limit;
-                                  // });
-                                },
-                                bloc.ecomlimit),
+                              "Ecom Transactions",
+                              bloc.ecomTransactionsLimit,
+                              (value) {
+                                bloc.ecomTransactionsLimit = value;
+                              },
+                              Container(
+                                width: 24,
+                                height: 24,
+                                child: Image(image: ImageResource.ecom),
+                              ),
+                              bloc.ecomLimitTextController,
+                              (limit) {
+                                // setState(() {
+                                //   bloc.ecomlimit = limit;
+                                // });
+                              },
+                            ),
                             SizedBox(
                               height: 20,
                             ),

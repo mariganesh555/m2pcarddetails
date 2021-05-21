@@ -142,11 +142,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 onTap: () {
                   if (widget.onTapped != null) widget.onTapped();
                 },
-                inputFormatters: [],
-                // inputFormatters: [
-                //   if (widget.maximumWordCount != null)
-                //     LengthLimitingTextInputFormatter(widget.maximumWordCount),
-                // ],
+
+                inputFormatters: [
+                  if (widget.maximumWordCount != null)
+                    LengthLimitingTextInputFormatter(widget.maximumWordCount),
+                ],
                 onSubmitted: (t) {
                   // widget.focusNode.unfocus();
                   // FocusScope.of(context).requestFocus(widget.focusNode);

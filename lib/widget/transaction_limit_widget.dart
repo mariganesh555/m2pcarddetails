@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:m2pcarddetails/utils/apputils.dart';
 import 'package:m2pcarddetails/utils/color_resource.dart';
 import 'package:m2pcarddetails/utils/image_resource.dart';
+import 'package:m2pcarddetails/utils/validator.dart';
 import 'package:m2pcarddetails/widget/plain_textfield.dart';
 import 'package:m2pcarddetails/widget/primary_button.dart';
 
@@ -14,7 +16,6 @@ class TransactionLimitWidget extends StatefulWidget {
   Function onSaveTapped;
   Widget image;
   TextEditingController controller;
-  String limit;
 
   TransactionLimitWidget(
     this.title,
@@ -23,30 +24,24 @@ class TransactionLimitWidget extends StatefulWidget {
     this.image,
     this.controller,
     this.onSaveTapped,
-    this.limit,
   );
   @override
   _TransactionLimitWidgetState createState() => _TransactionLimitWidgetState();
 }
 
-class _TransactionLimitWidgetState extends State<TransactionLimitWidget> {
-  bool editStatus;
-  bool isOnEditTapped = true;
-  bool isSaveTapped = false;
+class _TransactionLimitWidgetState extends State<TransactionLimitWidget>
+    with TickerProviderStateMixin {
+  bool showTextField = true;
+
   @override
   void initState() {
     // TODO: implement initState
-    editStatus = false;
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.limit.isEmpty) {
-      editStatus = true;
-    } else {
-      editStatus = false;
-    }
     return Container(
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(10)),
@@ -74,91 +69,101 @@ class _TransactionLimitWidgetState extends State<TransactionLimitWidget> {
                   })
             ],
           ),
-          Visibility(
-            visible: widget.switchValue,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: CustomText(
-                    "*Max.Per day Limit  ",
-                    fontSize: 10,
-                    color: ColorResource.color1515151.withOpacity(0.5),
+          AnimatedSize(
+            vsync: this,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeIn,
+            child: Visibility(
+              visible: widget.switchValue,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    child: CustomText(
+                      "*Max.Per day Limit  ",
+                      fontSize: 10,
+                      color: ColorResource.color1515151.withOpacity(0.5),
+                    ),
                   ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                        child: editStatus
-                            ? PlainTextField(
-                                "Set New Limit",
-                                widget.controller,
-                                keyBoardType: TextInputType.numberWithOptions(
-                                    decimal: true, signed: true),
-                              )
-                            : CustomText("₹" + widget.limit)),
-                    if (editStatus && isOnEditTapped)
-                      Container(
-                        width: 92,
-                        height: 40,
-                        margin: const EdgeInsets.only(left: 12),
-                        child: PrimaryButton(
-                          "Save",
-                          color: ColorResource.colorEBF0FF,
-                          textColor: ColorResource.color4C7DFF,
-                          isMarginRequired: false,
-                          onClick: () {
-                            // widget.onSaveTapped(widget.controller.text.trim());
-                            // setState(() {
-                            //   widget.editStatus = false;
-                            // });
-                            widget.limit = widget.controller.text;
-                            editStatus = false;
-                            isSaveTapped = true;
-                            isOnEditTapped = false;
-                            setState(() {});
-                          },
+                  Row(
+                    children: [
+                      Expanded(
+                          child: showTextField
+                              ? PlainTextField(
+                                  "Set New Limit",
+                                  widget.controller,
+                                  keyBoardType: TextInputType.numberWithOptions(
+                                      decimal: true, signed: true),
+                                )
+                              : CustomText("₹" + widget.controller.text)),
+                      if (showTextField)
+                        Container(
+                          width: 92,
+                          height: 40,
+                          margin: const EdgeInsets.only(left: 12),
+                          child: PrimaryButton(
+                            "Save",
+                            color: ColorResource.colorEBF0FF,
+                            textColor: ColorResource.color4C7DFF,
+                            isMarginRequired: false,
+                            onClick: () {
+                              final limitStatus = Validator.validate(
+                                  widget.controller.text.trim(),
+                                  rules: ['required']);
+                              if (!limitStatus.status) {
+                                AppUtils.showErrorToast("Limit can't be empty");
+                              } else {
+                                setState(() {
+                                  showTextField = false;
+                                });
+                              }
+                            },
+                          ),
                         ),
-                      ),
-                    if (!editStatus && isSaveTapped)
-                      Container(
-                        width: 92,
-                        height: 40,
-                        margin: const EdgeInsets.only(left: 12),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 16,
-                              height: 16,
-                              child: Image(
-                                image: ImageResource.edit,
-                                fit: BoxFit.fill,
+                      if (!showTextField)
+                        Container(
+                          width: 92,
+                          height: 40,
+                          margin: const EdgeInsets.only(left: 12),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 16,
+                                height: 16,
+                                child: Image(
+                                  image: ImageResource.edit,
+                                  fit: BoxFit.fill,
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              child: PrimaryButton(
-                                "Edit Limit",
-                                color: Colors.white,
-                                textColor: ColorResource.color4C7DFF,
-                                isMarginRequired: false,
-                                onClick: () {
-                                  // widget.onSaveTapped(
-                                  //     widget.controller.text.trim());
-                                  setState(() {
-                                    editStatus = true;
-                                    isOnEditTapped = true;
-                                    isSaveTapped = false;
-                                  });
-                                },
+                              Expanded(
+                                child: PrimaryButton(
+                                  "Edit Limit",
+                                  color: Colors.white,
+                                  textColor: ColorResource.color4C7DFF,
+                                  isMarginRequired: false,
+                                  onClick: () {
+                                    final limitStatus = Validator.validate(
+                                        widget.controller.text.trim(),
+                                        rules: ['required']);
+                                    if (!limitStatus.status) {
+                                      AppUtils.showErrorToast(
+                                          "Limit can't be empty");
+                                    } else {
+                                      setState(() {
+                                        showTextField = true;
+                                      });
+                                    }
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                  ],
-                )
-              ],
+                            ],
+                          ),
+                        )
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ],
