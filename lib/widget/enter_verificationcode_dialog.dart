@@ -166,7 +166,8 @@ class _EnterVerificationCodeDialogBoxState
     return PinCodeTextField(
       appContext: context,
       length: 4,
-      obscureText: false,
+      obscureText: true,
+      obscuringCharacter: "*",
       animationType: AnimationType.fade,
       autoDismissKeyboard: true,
       keyboardType: TextInputType.number,

@@ -33,6 +33,11 @@ class _TransactionLimitWidgetState extends State<TransactionLimitWidget>
     with TickerProviderStateMixin {
   bool showTextField = true;
 
+  bool buttonASelected = false;
+  bool buttonBSelected = false;
+  bool buttonCSelected = false;
+  bool buttonDSelected = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -71,7 +76,7 @@ class _TransactionLimitWidgetState extends State<TransactionLimitWidget>
           ),
           AnimatedSize(
             vsync: this,
-            duration: Duration(milliseconds: 300),
+            duration: Duration(milliseconds: 100),
             curve: Curves.easeIn,
             child: Visibility(
               visible: widget.switchValue,
@@ -93,10 +98,27 @@ class _TransactionLimitWidgetState extends State<TransactionLimitWidget>
                               ? PlainTextField(
                                   "Set New Limit",
                                   widget.controller,
+                                  onchanged: (text) {
+                                    if (text == "2500") {
+                                      onButtonAselected();
+                                    } else if (text == "5000") {
+                                      onButtonBselected();
+                                    } else if (text == "10000") {
+                                      onButtonCselected();
+                                    } else if (text == "20000") {
+                                      onButtonDselected();
+                                    } else {
+                                      alllButtonDeselected();
+                                    }
+                                  },
+                                  prefixWidget: Padding(
+                                      padding: EdgeInsets.only(
+                                          top: 15, left: 15, bottom: 15),
+                                      child: CustomText('₹')),
                                   keyBoardType: TextInputType.numberWithOptions(
                                       decimal: true, signed: true),
                                 )
-                              : CustomText("₹" + widget.controller.text)),
+                              : CustomText("₹ " + widget.controller.text)),
                       if (showTextField)
                         Container(
                           width: 92,
@@ -161,7 +183,83 @@ class _TransactionLimitWidgetState extends State<TransactionLimitWidget>
                           ),
                         )
                     ],
-                  )
+                  ),
+                  if (showTextField)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: PrimaryButton(
+                              "₹2500",
+                              color: buttonASelected
+                                  ? ColorResource.color4C7DFF
+                                  : Colors.white,
+                              textColor: buttonASelected
+                                  ? Colors.white
+                                  : ColorResource.color4C7DFF,
+                              onClick: () {
+                                onButtonAselected();
+                              },
+                            ),
+                          )),
+                          Expanded(
+                              child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: PrimaryButton(
+                              "₹5000",
+                              color: buttonBSelected
+                                  ? ColorResource.color4C7DFF
+                                  : Colors.white,
+                              textColor: buttonBSelected
+                                  ? Colors.white
+                                  : ColorResource.color4C7DFF,
+                              onClick: () {
+                                onButtonBselected();
+                              },
+                            ),
+                          )),
+                          Expanded(
+                              child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: PrimaryButton(
+                              "₹10,000",
+                              color: buttonCSelected
+                                  ? ColorResource.color4C7DFF
+                                  : Colors.white,
+                              textColor: buttonCSelected
+                                  ? Colors.white
+                                  : ColorResource.color4C7DFF,
+                              onClick: () {
+                                onButtonCselected();
+                              },
+                            ),
+                          )),
+                          Expanded(
+                              child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: PrimaryButton(
+                              "₹20,000",
+                              color: buttonDSelected
+                                  ? ColorResource.color4C7DFF
+                                  : Colors.white,
+                              textColor: buttonDSelected
+                                  ? Colors.white
+                                  : ColorResource.color4C7DFF,
+                              onClick: () {
+                                onButtonDselected();
+                              },
+                            ),
+                          )),
+                        ],
+                      ),
+                    )
                 ],
               ),
             ),
@@ -169,5 +267,58 @@ class _TransactionLimitWidgetState extends State<TransactionLimitWidget>
         ],
       ),
     );
+  }
+
+  void onButtonAselected() {
+    setState(() {
+      buttonDSelected = false;
+      buttonASelected = true;
+      buttonBSelected = false;
+      buttonCSelected = false;
+      widget.controller.text = "2500";
+    });
+    AppUtils.hideKeyBoard(context);
+  }
+
+  void onButtonBselected() {
+    setState(() {
+      buttonDSelected = false;
+      buttonASelected = false;
+      buttonBSelected = true;
+      buttonCSelected = false;
+      widget.controller.text = "5000";
+    });
+    AppUtils.hideKeyBoard(context);
+  }
+
+  void onButtonCselected() {
+    setState(() {
+      buttonDSelected = false;
+      buttonASelected = false;
+      buttonBSelected = false;
+      buttonCSelected = true;
+      widget.controller.text = "10000";
+    });
+    AppUtils.hideKeyBoard(context);
+  }
+
+  void onButtonDselected() {
+    setState(() {
+      buttonDSelected = true;
+      buttonASelected = false;
+      buttonBSelected = false;
+      buttonCSelected = false;
+      widget.controller.text = "20000";
+    });
+    AppUtils.hideKeyBoard(context);
+  }
+
+  void alllButtonDeselected() {
+    setState(() {
+      buttonDSelected = false;
+      buttonASelected = false;
+      buttonBSelected = false;
+      buttonCSelected = false;
+    });
   }
 }

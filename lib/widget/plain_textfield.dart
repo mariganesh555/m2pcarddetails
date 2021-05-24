@@ -23,6 +23,7 @@ class PlainTextField extends StatefulWidget {
   FocusNode focusNode;
   Color focusTextColor;
   bool isCopyEnabled;
+  Function onchanged;
 
   // ignore: avoid_unused_constructor_parameters
 
@@ -48,6 +49,7 @@ class PlainTextField extends StatefulWidget {
       this.focusNode,
       this.focusTextColor,
       this.keyBoardType = TextInputType.name,
+      this.onchanged,
       this.isCopyEnabled = false});
 
   @override
@@ -72,6 +74,7 @@ class _PlainTextFieldState extends State<PlainTextField> {
           onTap: () {
             if (widget.onTapped != null) widget.onTapped();
           },
+          onChanged: widget.onchanged,
 
           inputFormatters: [
             if (widget.maximumWordCount != null)
@@ -100,6 +103,7 @@ class _PlainTextFieldState extends State<PlainTextField> {
               fontFamily: Font.IlisarniqRegular.toString(),
               fontSize: 12),
           decoration: InputDecoration(
+            icon: widget.prefixWidget,
             labelStyle: TextStyle(
               color: widget.titleColor,
               fontSize: 12,
@@ -115,10 +119,11 @@ class _PlainTextFieldState extends State<PlainTextField> {
             errorBorder: InputBorder.none,
             disabledBorder: InputBorder.none,
             isDense: true, // Added this
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 15, horizontal: 16),
+            contentPadding: EdgeInsets.symmetric(
+                vertical: 15,
+                horizontal: widget.prefixWidget != null ? -10 : 16),
             hintText: widget.hintText,
-            prefixIcon: widget.prefixWidget,
+            // prefixIcon: widget.prefixWidget,
             // hintStyle: TextStyle(
             //     color: Colors.red,
             //     fontFamily: Font.poppinsMedium.toString()),

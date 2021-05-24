@@ -361,7 +361,8 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                   "Block Temporarily",
                   () {
                     Navigator.pop(context);
-                    bloc.add(HomeTemperaryBlockOtpVerificationEvent());
+                    bloc.add(HomeTemperaryBlockCustomDialogEvent());
+                    // bloc.add(HomeTemperaryBlockOtpVerificationEvent());
                   },
                   isCancelButtonRequired: true,
                 );
@@ -761,7 +762,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                               AnimatedSize(
                                 vsync: this,
                                 duration: Duration(milliseconds: 300),
-                                curve: Curves.fastOutSlowIn,
+                                curve: Curves.easeIn,
                                 child: Container(
                                   color: Colors.white,
                                   // height: setpinVisibility ? 270 : 0,
@@ -885,7 +886,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                               AnimatedSize(
                                 vsync: this,
                                 duration: Duration(milliseconds: 300),
-                                curve: Curves.fastOutSlowIn,
+                                curve: Curves.easeIn,
                                 child: Visibility(
                                   visible: blockCardVisibility,
                                   child: Padding(
@@ -905,7 +906,9 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                                 HomeTemperaryBlockAlertEvent());
                                           } else {
                                             bloc.add(
-                                                HomeTemperaryUnBlockOtpVerificationEvent());
+                                                HomeTemperaryUnBlockCustomDialogEvent());
+                                            // bloc.add(
+                                            //     HomeTemperaryUnBlockOtpVerificationEvent());
                                           }
                                         }),
                                         SizedBox(
@@ -986,7 +989,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                               AnimatedSize(
                                 vsync: this,
                                 duration: Duration(milliseconds: 300),
-                                curve: Curves.fastOutSlowIn,
+                                curve: Curves.easeIn,
                                 child: Visibility(
                                   visible: cardPreferenceVisibility,
                                   child: Padding(
