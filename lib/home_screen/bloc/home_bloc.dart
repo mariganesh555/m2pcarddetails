@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:m2pcarddetails/home_screen/bloc/home_event.dart';
 import 'package:m2pcarddetails/home_screen/bloc/home_state.dart';
 import 'package:m2pcarddetails/utils/string_resource.dart';

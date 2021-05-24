@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:m2pcarddetails/home_screen/bloc/home_bloc.dart';
 import 'package:m2pcarddetails/home_screen/bloc/home_event.dart';
 import 'package:m2pcarddetails/utils/apputils.dart';
@@ -19,6 +20,7 @@ import 'package:m2pcarddetails/widget/enter_verificationcode_dialog.dart';
 import 'package:m2pcarddetails/widget/plain_textfield.dart';
 import 'package:m2pcarddetails/widget/primary_button.dart';
 import 'package:m2pcarddetails/widget/transaction_limit_widget.dart';
+import 'package:local_auth/error_codes.dart' as auth_error;
 
 import 'home_screen/bloc/home_state.dart';
 
@@ -58,6 +60,8 @@ class _CardDetailScreenState extends State<CardDetailScreen>
   bool cardPreferenceVisibility = false;
 
   HomeBloc bloc;
+
+  final localAuth = LocalAuthentication();
 
   @override
   void initState() {
@@ -570,18 +574,37 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                           ),
                                           Spacer(),
                                           InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                isSecurityCodeHidden =
-                                                    !isSecurityCodeHidden;
-                                                if (isSecurityCodeHidden) {
-                                                  bloc.securityCodeTextController
-                                                      .text = "***";
-                                                } else {
-                                                  bloc.securityCodeTextController
-                                                      .text = securityCode;
+                                            onTap: () async {
+                                              // isSecurityCodeHidden =
+                                              //     !isSecurityCodeHidden;
+                                              if (isSecurityCodeHidden) {
+                                                try {
+                                                  bool didAuthenticate =
+                                                      await localAuth.authenticate(
+                                                          localizedReason:
+                                                              'Please authenticate to view CVV',
+                                                          biometricOnly: true);
+                                                  if (didAuthenticate) {
+                                                    bloc.securityCodeTextController
+                                                        .text = securityCode;
+                                                    isSecurityCodeHidden =
+                                                        false;
+                                                  } else {
+                                                    AppUtils.showErrorToast(
+                                                        "Not authenticated");
+                                                  }
+                                                } on PlatformException catch (e) {
+                                                  if (e.code ==
+                                                      auth_error.notAvailable) {
+                                                    // Handle this exception here.
+                                                  }
                                                 }
-                                              });
+                                              } else {
+                                                bloc.securityCodeTextController
+                                                    .text = "***";
+                                                isSecurityCodeHidden = true;
+                                              }
+                                              setState(() {});
                                             },
                                             child: Container(
                                               decoration: BoxDecoration(
