@@ -224,6 +224,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                     "Continue", () {
                   setState(() {
                     bloc.blockPermanant = true;
+                    bloc.blockTemporary = false;
                   });
                   Navigator.pop(context);
                 });
@@ -577,13 +578,22 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                             onTap: () async {
                                               // isSecurityCodeHidden =
                                               //     !isSecurityCodeHidden;
+                                              // List<BiometricType>
+                                              //     availableBiometrics =
+                                              //     await localAuth
+                                              //         .getAvailableBiometrics();
+
+                                              // bool canCheck = await localAuth
+                                              //     .canCheckBiometrics;
                                               if (isSecurityCodeHidden) {
                                                 try {
                                                   bool didAuthenticate =
                                                       await localAuth.authenticate(
                                                           localizedReason:
                                                               'Please authenticate to view CVV',
-                                                          biometricOnly: true);
+                                                          biometricOnly: true,
+                                                          useErrorDialogs: true,
+                                                          stickyAuth: false);
                                                   if (didAuthenticate) {
                                                     bloc.securityCodeTextController
                                                         .text = securityCode;
@@ -923,17 +933,20 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                         CustomSwitch(
                                             "Block Temporarily",
                                             "Prevents transaction on this Card",
-                                            bloc.blockTemporary, (value) {
-                                          if (value) {
-                                            bloc.add(
-                                                HomeTemperaryBlockAlertEvent());
-                                          } else {
-                                            bloc.add(
-                                                HomeTemperaryUnBlockCustomDialogEvent());
-                                            // bloc.add(
-                                            //     HomeTemperaryUnBlockOtpVerificationEvent());
-                                          }
-                                        }),
+                                            bloc.blockTemporary,
+                                            bloc.blockPermanant
+                                                ? (value) {}
+                                                : (value) {
+                                                    if (value) {
+                                                      bloc.add(
+                                                          HomeTemperaryBlockAlertEvent());
+                                                    } else {
+                                                      bloc.add(
+                                                          HomeTemperaryUnBlockCustomDialogEvent());
+                                                      // bloc.add(
+                                                      //     HomeTemperaryUnBlockOtpVerificationEvent());
+                                                    }
+                                                  }),
                                         SizedBox(
                                           height: 30,
                                         ),
