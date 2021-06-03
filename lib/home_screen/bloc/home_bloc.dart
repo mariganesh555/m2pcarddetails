@@ -12,6 +12,9 @@ import 'package:cryptography/cryptography.dart';
 import 'package:pointycastle/ecc/api.dart';
 import 'package:basic_utils/basic_utils.dart';
 
+import 'package:convert/convert.dart';
+import 'package:pointycastle/pointycastle.dart';
+
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeInitialState());
 
@@ -44,7 +47,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
     if (event is HomeInitialEvent) {
-      // final algorithm = Ecdh.p256(length: 32);
+      // final algorithmm = Ecdh.p256(length: 32);
 
       // // Alice chooses her key pair
       // final aliceKeyPair = await algorithm.newKeyPair();
@@ -70,20 +73,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       //   secretKey.then((value) => print(value.extractBytes()));
       // });
 
-      var keyPairr = secp256k1KeyPair();
+      // var keyPairr = secp256k1KeyPair();
 
-      ECPrivateKey privateKey = keyPairr.privateKey;
-      ECPublicKey publicKey = keyPairr.publicKey;
-      String pemString = CryptoUtils.encodeEcPublicKeyToPem(publicKey);
-      print(pemString);
-      Uint8List biteList = CryptoUtils.getBytesFromPEMString(pemString);
-      String haxString = CryptoUtils.getHash(biteList);
-      print("Hexstring is $haxString");
+      // PrivateKey privateKey = keyPairr.privateKey;
+      // PublicKey publicKey = keyPairr.publicKey;
+      // String pemString = CryptoUtils.encodeEcPublicKeyToPem(publicKey);
+      // print(pemString);
+      // Uint8List biteList = CryptoUtils.getBytesFromPEMString(pemString);
+      // String haxString = CryptoUtils.getHash(biteList);
+      // print("Hexstring is $haxString");
 
-      // in hex
-      print(privateKey.d.toRadixString(16));
-      print(publicKey.Q.x.toBigInteger().toRadixString(32));
-      print(publicKey.Q.y.toBigInteger().toRadixString(32));
+      // // in hex
+      // print(privateKey.d.toRadixString(16));
+      // print(publicKey.Q.x.toBigInteger().toRadixString(32));
+      // print(publicKey.Q.y.toBigInteger().toRadixString(32));
 
       final algorithm = Cryptography.instance.x25519();
 
@@ -93,14 +96,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       final remotePublicKey = await remoteKeyPair.extractPublicKey();
 
-      // var result = hex.encode(remotePublicKey.bytes);
-      // print(result);
+      var result = hex.encode(remotePublicKey.bytes);
+      print(result);
 
       // We can now calculate the shared secret key
       final sharedSecretKey = await algorithm.sharedSecretKey(
         keyPair: keyPair,
         remotePublicKey: remotePublicKey,
       );
+
+      // SimplePublicKey(bytes, type: KeyPairType.p256)
 
       sharedSecretKey.extract().then((value) {
         print(value);
@@ -116,7 +121,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final dobStatus = Validator.validate(dobTextController.text.trim(),
           rules: ['required']);
       if (!dobStatus.status) {
-        yield HomeErrorState(StringResource.dob + dobStatus.error);
+        yield HomeErrorState(StringResource.dob + dobStatus.error!);
         return;
       }
 
@@ -124,7 +129,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           enterPinTextController.text.trim(),
           rules: ['required']);
       if (!enterPinStatus.status) {
-        yield HomeErrorState(StringResource.pin + enterPinStatus.error);
+        yield HomeErrorState(StringResource.pin + enterPinStatus.error!);
         return;
       }
 
@@ -133,7 +138,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           rules: ['required']);
       if (!conformPinStatus.status) {
         yield HomeErrorState(
-            StringResource.conformPIN + conformPinStatus.error);
+            StringResource.conformPIN + conformPinStatus.error!);
         return;
       }
 

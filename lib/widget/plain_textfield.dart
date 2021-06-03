@@ -8,22 +8,22 @@ class PlainTextField extends StatefulWidget {
   String hintText;
   bool obscureText;
   TextEditingController controller;
-  Widget suffixWidget;
+  Widget? suffixWidget;
   bool isEnable;
   bool isReadOnly;
-  Function onTapped;
-  Widget prefixWidget;
+  Function? onTapped;
+  Widget? prefixWidget;
   TextInputType keyBoardType;
-  int maximumWordCount;
+  int? maximumWordCount;
   Color titleColor;
   Color borderColor;
   Color textColor;
   bool isHighlighted;
   Color highlightColor;
-  FocusNode focusNode;
-  Color focusTextColor;
+  FocusNode? focusNode;
+  Color? focusTextColor;
   bool isCopyEnabled;
-  Function onchanged;
+  Function? onchanged;
 
   // ignore: avoid_unused_constructor_parameters
 
@@ -72,9 +72,11 @@ class _PlainTextFieldState extends State<PlainTextField> {
         child: TextField(
           textInputAction: TextInputAction.done,
           onTap: () {
-            if (widget.onTapped != null) widget.onTapped();
+            if (widget.onTapped != null) widget.onTapped!();
           },
-          onChanged: widget.onchanged,
+          onChanged: (v) {
+            if (widget.onchanged != null) widget.onchanged!();
+          },
 
           inputFormatters: [
             if (widget.maximumWordCount != null)
@@ -97,7 +99,7 @@ class _PlainTextFieldState extends State<PlainTextField> {
           // focusNode: widget.focusNode,
           style: TextStyle(
               // fontWeight: FontWeights.bold,
-              color: (widget.focusNode != null && widget.focusNode.hasFocus)
+              color: (widget.focusNode != null && widget.focusNode!.hasFocus)
                   ? widget.focusTextColor
                   : widget.textColor,
               fontFamily: Font.IlisarniqRegular.toString(),

@@ -7,7 +7,7 @@ import 'custom_text.dart';
 
 class PrimaryButton extends StatefulWidget {
   final String buttonName;
-  final Function onClick;
+  final Function? onClick;
   // ignore: prefer_typing_uninitialized_variables
   final double leftMargin;
   // ignore: type_annotate_public_apis
@@ -19,7 +19,7 @@ class PrimaryButton extends StatefulWidget {
   final Color textColor;
   final Color marginColor;
   final bool isShadowrequired;
-  final Widget prefixIcon;
+  final Widget? prefixIcon;
 
   const PrimaryButton(this.buttonName,
       {this.onClick,
@@ -47,7 +47,9 @@ class _PrimaryButtonState extends State<PrimaryButton> {
       child: InkWell(
         onTap: () {
           AppUtils.hideKeyBoard(context);
-          widget.onClick();
+          if (widget.onClick != null) {
+            widget.onClick!();
+          }
         },
         child: Center(
           child: Row(

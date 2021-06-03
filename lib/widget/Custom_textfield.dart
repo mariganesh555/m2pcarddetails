@@ -11,20 +11,20 @@ class CustomTextField extends StatefulWidget {
   String hintText;
   bool obscureText;
   TextEditingController controller;
-  Widget suffixWidget;
+  Widget? suffixWidget;
   bool isEnable;
   bool isReadOnly;
-  Function onTapped;
-  Widget prefixWidget;
+  Function? onTapped;
+  Widget? prefixWidget;
   TextInputType keyBoardType;
-  int maximumWordCount;
+  int? maximumWordCount;
   Color titleColor;
   Color borderColor;
   Color textColor;
   bool isHighlighted;
   Color highlightColor;
-  FocusNode focusNode;
-  Color focusTextColor;
+  FocusNode? focusNode;
+  Color? focusTextColor;
   bool isCopyEnabled;
 
   // ignore: avoid_unused_constructor_parameters
@@ -64,12 +64,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   void initState() {
     // TODO: implement initState
-    if (widget.focusNode != null)
-      widget.focusNode.addListener(() {
+    if (widget.focusNode != null) {
+      widget.focusNode!.addListener(() {
         setState(() {
           FocusScope.of(context).requestFocus(widget.focusNode);
         });
       });
+    }
+
     super.initState();
   }
 
@@ -140,7 +142,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               child: TextField(
                 textInputAction: TextInputAction.done,
                 onTap: () {
-                  if (widget.onTapped != null) widget.onTapped();
+                  if (widget.onTapped != null) widget.onTapped!();
                 },
 
                 inputFormatters: [
@@ -165,7 +167,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 style: TextStyle(
                     // fontWeight: FontWeights.bold,
                     color:
-                        (widget.focusNode != null && widget.focusNode.hasFocus)
+                        (widget.focusNode != null && widget.focusNode!.hasFocus)
                             ? widget.focusTextColor
                             : widget.textColor,
                     fontFamily: Font.IlisarniqRegular.toString(),

@@ -3,7 +3,7 @@ class Validator {
     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
   );
 
-  static ValidationState validate(String input, {List<String> rules}) {
+  static ValidationState validate(String input, {required List<String> rules}) {
     for (var i = 0; i < rules.length; i++) {
       final String rule = rules[i];
       if (rule == "required") {
@@ -26,7 +26,7 @@ class Validator {
 
       if (rule.startsWith("min:")) {
         try {
-          final int letterCount = int.tryParse(rule.replaceAll("min:", ""));
+          final int letterCount = int.tryParse(rule.replaceAll("min:", ""))!;
           if (input.length < letterCount) {
             return ValidationState(
                 // ignore: avoid_redundant_argument_values
@@ -66,7 +66,7 @@ class Validator {
 
 class ValidationState {
   bool status;
-  String error;
+  String? error;
 
   ValidationState({this.status = false, this.error});
 }

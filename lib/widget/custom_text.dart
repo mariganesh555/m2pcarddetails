@@ -9,13 +9,13 @@ class CustomText extends StatefulWidget {
   final Color color;
   final double lineHeight;
   final TextAlign textAlign;
-  final GestureTapCallback onTap;
+  final GestureTapCallback? onTap;
   bool isUnderLine = false;
   bool isSingleLine = false;
-  final int maxLines;
+  final int? maxLines;
   final FontWeight fontWeight;
-  final FontStyle fontStyle;
-  double letterSpacing;
+  final FontStyle? fontStyle;
+  double? letterSpacing;
 
   CustomText(String text,
       {this.fontWeight = FontWeight.w400,
@@ -42,7 +42,7 @@ class _CustomTextState extends State<CustomText> {
   Widget build(BuildContext context) {
     // ignore: unnecessary_this
     final Text textWidget = Text(
-      this.widget.text ?? "",
+      this.widget.text,
       // ignore: unnecessary_this
       textAlign: this.widget.textAlign,
       overflow: widget.isSingleLine ? TextOverflow.ellipsis : null,

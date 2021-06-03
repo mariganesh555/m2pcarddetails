@@ -47,20 +47,20 @@ class _CardDetailScreenState extends State<CardDetailScreen>
   String expiryDate = "08/22";
   String securityCode = "456";
 
-  String cardholderName;
+  late String cardholderName;
 
-  Image cardBackGroundImage;
-  Image cardTypeImage;
-  TabController _tabController;
+  late Image cardBackGroundImage;
+  late Image cardTypeImage;
+  late TabController _tabController;
 
-  Timer _timer;
+  late Timer _timer;
   int pendingSeconds = 180;
 
   bool setpinVisibility = false;
   bool blockCardVisibility = false;
   bool cardPreferenceVisibility = false;
 
-  HomeBloc bloc;
+  late HomeBloc bloc;
 
   final localAuth = LocalAuthentication();
 
@@ -821,7 +821,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                                                   bloc.dobTextController.text =
                                                       TimeUtils
                                                           .convertdateTimeToDDMMMYYYY(
-                                                              value);
+                                                              value!);
                                                 });
                                               });
                                             },
@@ -1247,7 +1247,8 @@ class _CardDetailScreenState extends State<CardDetailScreen>
   }
 
   @override
-  Future<void> dispose() {
+  void dispose() {
+    // TODO: implement dispose
     _timer.cancel();
     super.dispose();
   }

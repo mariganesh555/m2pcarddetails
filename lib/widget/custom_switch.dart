@@ -5,7 +5,7 @@ import 'custom_text.dart';
 
 class CustomSwitch extends StatefulWidget {
   String title;
-  String subTitle;
+  String? subTitle;
   bool switchValue;
   Function onValueChange;
 
@@ -35,7 +35,7 @@ class _CustomSwitchState extends State<CustomSwitch> {
               ),
             if (widget.subTitle != null)
               CustomText(
-                widget.subTitle,
+                widget.subTitle!,
                 fontSize: 12,
                 color: ColorResource.color1515151.withOpacity(0.4),
               ),

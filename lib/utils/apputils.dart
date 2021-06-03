@@ -29,3 +29,11 @@ class AppUtils {
         fontSize: 14.0);
   }
 }
+
+class DebugMode {
+  static bool get isInDebugMode {
+    const bool inDebugMode = true;
+    //assert(inDebugMode = true);
+    return inDebugMode;
+  }
+}
