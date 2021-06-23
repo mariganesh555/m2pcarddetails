@@ -1,6 +1,7 @@
 import "dart:typed_data";
 import "dart:math";
-import "package:pointycastle/pointycastle.dart";
+import 'package:convert/convert.dart';
+import "package:pointycastle/pointycastle.dart" as pointy;
 import "package:pointycastle/export.dart";
 import "package:pointycastle/api.dart";
 import "package:pointycastle/ecc/api.dart";
@@ -9,7 +10,8 @@ import "package:pointycastle/key_generators/api.dart";
 import "package:pointycastle/key_generators/ec_key_generator.dart";
 import "package:pointycastle/random/fortuna_random.dart";
 
-AsymmetricKeyPair<PublicKey, PrivateKey> secp256k1KeyPair() {
+
+AsymmetricKeyPair<pointy.PublicKey, PrivateKey> secp256k1KeyPair() {
   var keyParams = ECKeyGeneratorParameters(ECCurve_secp256k1());
 
   var random = FortunaRandom();

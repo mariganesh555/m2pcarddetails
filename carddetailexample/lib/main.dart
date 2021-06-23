@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:m2pcarddetails/m2pcarddetails.dart';
 import 'package:m2pcarddetails/widget/custom_text.dart';
+import 'package:package_info/package_info.dart';
 
 void main() {
   runApp(MyApp());
@@ -51,6 +53,31 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  static const platform = const MethodChannel('samples.flutter.dev/battery');
+
+  Future<void> getKeys() async {
+    String batteryLevel;
+    try {
+      final publicKeyString = await platform.invokeMethod('getPublicString');
+      final privateKeyString = await platform.invokeMethod('getPrivateString');
+    } on PlatformException catch (e) {
+      batteryLevel = "Failed to get battery level: '${e.message}'.";
+    }
+  }
+
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo();
+    getKeys();
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -71,6 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -107,6 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox(
               height: 30,
             ),
+
             FloatingActionButton(
               onPressed: () async {
                 Navigator.of(context).push(
@@ -137,6 +166,20 @@ class _MyHomePageState extends State<MyHomePage> {
       //   tooltip: 'Increment',
       //   child: Icon(Icons.add),
       // ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Future<void> _initPackageInfo() async {
+    final PackageInfo info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
+  }
+
+  Widget _infoTile(String title, String subtitle) {
+    return ListTile(
+      title: Text(title),
+      subtitle: Text(subtitle.isNotEmpty ? subtitle : 'Not set'),
     );
   }
 }

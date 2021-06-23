@@ -1,19 +1,26 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:m2pcarddetails/home_screen/bloc/home_event.dart';
 import 'package:m2pcarddetails/home_screen/bloc/home_state.dart';
+import 'package:m2pcarddetails/http/dio.dart';
+import 'package:m2pcarddetails/http/repository/home_repository.dart';
+import 'package:m2pcarddetails/http/response/card_detail_response.dart';
+import 'package:m2pcarddetails/http/response/generic_response.dart';
+import 'package:m2pcarddetails/utils/apputils.dart';
 import 'package:m2pcarddetails/utils/encryption_utils.dart';
 import 'package:m2pcarddetails/utils/string_resource.dart';
 import 'package:m2pcarddetails/utils/validator.dart';
 
-import 'package:cryptography/cryptography.dart';
 import 'package:pointycastle/ecc/api.dart';
 import 'package:basic_utils/basic_utils.dart';
 
 import 'package:convert/convert.dart';
-import 'package:pointycastle/pointycastle.dart';
+import 'package:pointycastle/ecc/curves/secp256k1.dart';
+import 'package:pointycastle/pointycastle.dart' as pointy;
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeInitialState());
@@ -44,77 +51,54 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   String posLimit = "";
   String ecomlimit = "";
 
+  late String publicKeyString;
+  late String privateKeyString;
+  late String secretKeyString;
+  late String serverPublicKey;
+
+  late String cardDetailMessage;
+
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
     if (event is HomeInitialEvent) {
-      // final algorithmm = Ecdh.p256(length: 32);
+      yield HomeInitialState();
 
-      // // Alice chooses her key pair
-      // final aliceKeyPair = await algorithm.newKeyPair();
+      GenericResponse? depairResponse = await HomeRepository.depairPublicKey();
 
-      // // Alice knows Bob's public key
-      // final bobKeyPair = await algorithm.newKeyPair();
-      // final bobPublicKey = await bobKeyPair.extractPublicKey();
+      if (depairResponse != null) {
+        if (depairResponse.result) {
+          AppUtils.showToast("Depaired Success");
+        } else {}
+      }
 
-      // // Alice calculates the shared secret.
-      // final sharedSecret = await algorithm.sharedSecretKey(
-      //   keyPair: aliceKeyPair,
-      //   remotePublicKey: bobPublicKey,
-      // );
-      // final sharedSecretBytes = await aliceKeyPair.extractPublicKey();
-      // print('Shared secret: $sharedSecretBytes');
+      GenericResponse? response =
+          await HomeRepository.pairPublicKey(publicKeyString);
+      if (response != null) {
+        if (response.result) {
+          AppUtils.showToast("Paired Success");
+        } else {
+          AppUtils.showErrorToast("Failure");
+        }
+      }
 
-      // EcKeyPair keyPair = await algorithm.newKeyPair();
+      CardDetailResponse? cardDetailResponse =
+          await HomeRepository.getCardDetails();
+      if (cardDetailResponse != null) {
+        if (cardDetailResponse.result != null) {
+          cardDetailMessage = cardDetailResponse.result!.detailMessage;
+          serverPublicKey = cardDetailResponse.result!.publicKey;
+          yield HomeSecretKeyState();
+        } else {
+          AppUtils.showErrorToast("Failure");
+        }
+      }
+      yield HomeLoadedState();
+    }
 
-      // keyPair.extractPublicKey().then((value) {
-      //   var secretKey =
-      //       algorithm.sharedSecretKey(keyPair: keyPair, remotePublicKey: value);
-
-      //   secretKey.then((value) => print(value.extractBytes()));
-      // });
-
-      // var keyPairr = secp256k1KeyPair();
-
-      // PrivateKey privateKey = keyPairr.privateKey;
-      // PublicKey publicKey = keyPairr.publicKey;
-      // String pemString = CryptoUtils.encodeEcPublicKeyToPem(publicKey);
-      // print(pemString);
-      // Uint8List biteList = CryptoUtils.getBytesFromPEMString(pemString);
-      // String haxString = CryptoUtils.getHash(biteList);
-      // print("Hexstring is $haxString");
-
-      // // in hex
-      // print(privateKey.d.toRadixString(16));
-      // print(publicKey.Q.x.toBigInteger().toRadixString(32));
-      // print(publicKey.Q.y.toBigInteger().toRadixString(32));
-
-      final algorithm = Cryptography.instance.x25519();
-
-      // Let's generate two keypairs.
-      final keyPair = await algorithm.newKeyPair();
-      final remoteKeyPair = await algorithm.newKeyPair();
-
-      final remotePublicKey = await remoteKeyPair.extractPublicKey();
-
-      var result = hex.encode(remotePublicKey.bytes);
-      print(result);
-
-      // We can now calculate the shared secret key
-      final sharedSecretKey = await algorithm.sharedSecretKey(
-        keyPair: keyPair,
-        remotePublicKey: remotePublicKey,
-      );
-
-      // SimplePublicKey(bytes, type: KeyPairType.p256)
-
-      sharedSecretKey.extract().then((value) {
-        print(value);
-      });
-
-      print(sharedSecretKey.extractBytes().then((value) async {
-        print(value);
-        // print(new String.fromCharCodes(value));
-      }));
+    if (event is HomeCardDetailDecryptEvent) {
+      String decrypted =
+          AppUtils.decryptAES(cardDetailMessage, secretKeyString);
+      print(decrypted);
     }
 
     if (event is HomeEnterVerificationCodeAlertEvent) {

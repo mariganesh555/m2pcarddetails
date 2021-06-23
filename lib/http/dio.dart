@@ -15,18 +15,15 @@ class DioHelper {
   Dio dio = Dio();
 
   bool isMaintanence = false;
-  DioHelper({bool isValidateApi = false, bool isloginApi = false}) {
+
+  DioHelper() {
     dio.options.baseUrl = HttpUrl.baseurl;
     dio.options.followRedirects = true;
     // dio.options.receiveDataWhenStatusError = true;
 
     dio.options.headers[HttpHeaders.acceptHeader] = "application/json";
     dio.options.validateStatus = (status) {
-      if (isloginApi) {
-        return status! < 500;
-      } else {
-        return status! < 400;
-      }
+      return status! < 400;
     };
 
     dio.transformer = JsonTransformer();
@@ -39,14 +36,20 @@ class DioHelper {
 
   // ignore: always_declare_return_types
   _setupAuthInterceptor() async {
-    dio.interceptors.add(InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          // final String accessToken = await PreferenceHelper.getAccessToken();
-          // final String refreshToken = await PreferenceHelper.getRefreshToken();
+    dio.interceptors
+        .add(InterceptorsWrapper(onRequest: (options, handler) async {
+      // final String accessToken = await PreferenceHelper.getAccessToken();
+      // final String refreshToken = await PreferenceHelper.getRefreshToken();
 
-          options.headers["TENANT"] = Constants.tenant;
-        },
-        onError: (DioError error, handler) async {}));
+      options.headers["TENANT"] = Constants.tenant;
+      return handler.next(options);
+    }, onResponse: (Response response, handler) async {
+      isMaintanence = false;
+
+      return handler.next(response);
+    }, onError: (DioError error, handler) async {
+      return handler.next(error);
+    }));
   }
 
   static FutureOr<bool> checkDioRetry(DioError error) {
@@ -90,8 +93,7 @@ Future<Map<String, dynamic>> _parseJson(String text) {
   return compute(_parseAndDecode, text);
 }
 
-Dio dio({bool isValidateAPi = false, bool isLoginApi = false}) {
-  final Dio dio =
-      DioHelper(isValidateApi: isValidateAPi, isloginApi: isLoginApi).dio;
+Dio dio() {
+  final Dio dio = DioHelper().dio;
   return dio;
 }

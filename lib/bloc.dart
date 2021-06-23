@@ -2,11 +2,12 @@
 import 'package:bloc/bloc.dart';
 
 class EchoBlocDelegate extends BlocObserver {
-  @override
-  // ignore: unnecessary_overrides
-  void onEvent(Bloc bloc, Object event) {
-    super.onEvent(bloc, event);
-  }
+  // @override
+  // // ignore: unnecessary_overrides
+  // void onEvent(Bloc bloc, Object event) {
+  //   super.onEvent(bloc, event);
+  // }
+  
 
   @override
   void onTransition(Bloc bloc, Transition transition) {

@@ -46,3 +46,5 @@ class HomeTemperaryBlockOtpVerificationState extends HomeState {}
 class HomePeramanantUnBlockOtpVerificationState extends HomeState {}
 
 class HomeTemperaryUnBlockOtpVerificationState extends HomeState {}
+
+class HomeSecretKeyState extends HomeState {}

@@ -37,3 +37,5 @@ class HomeCardUnLockCustomDialogEvent extends HomeEvent {
 class HomePremanantBlockAlertEvent extends HomeEvent {}
 
 class HomeTemperaryBlockAlertEvent extends HomeEvent {}
+
+class HomeCardDetailDecryptEvent extends HomeEvent {}

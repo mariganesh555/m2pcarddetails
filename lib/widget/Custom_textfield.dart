@@ -173,6 +173,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     fontFamily: Font.IlisarniqRegular.toString(),
                     fontSize: 18),
                 decoration: InputDecoration(
+                  
                   labelStyle: TextStyle(
                     color: widget.titleColor,
                     fontSize: 24,
