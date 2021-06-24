@@ -1,6 +1,7 @@
 library m2pcarddetails;
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -67,8 +68,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
 
   Future<void> getPublicAndPrivateKeys() async {
     try {
-      bloc.publicKeyString =
-          await platform.invokeMethod('getPublicString', ["qwerty"]);
+      bloc.publicKeyString = await platform.invokeMethod('getPublicString');
       bloc.privateKeyString = await platform.invokeMethod('getPrivateString');
       setState(() {});
     } on PlatformException catch (e) {
@@ -122,10 +122,13 @@ class _CardDetailScreenState extends State<CardDetailScreen>
       listener: (BuildContext context, HomeState state) async {
         if (state is HomeSecretKeyState) {
           try {
-            bloc.secretKeyString = await platform.invokeMethod(
-                'getSecretString', bloc.serverPublicKey);
-            String decrypted = await platform.invokeMethod(
-                'getCardDetail', bloc.cardDetailMessage);
+            if (Platform.isIOS)
+              bloc.secretKeyString = await platform.invokeMethod(
+                  'getSecretString', bloc.serverPublicKey);
+            String decrypted = await platform.invokeMethod('getCardDetail', {
+              "detailMessage": bloc.cardDetailMessage,
+              "serverPublicKey": bloc.serverPublicKey
+            });
 
             print(decrypted);
           } on PlatformException catch (e) {

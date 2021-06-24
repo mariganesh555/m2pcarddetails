@@ -55,16 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   static const platform = const MethodChannel('samples.flutter.dev/battery');
 
-  Future<void> getKeys() async {
-    String batteryLevel;
-    try {
-      final publicKeyString = await platform.invokeMethod('getPublicString');
-      final privateKeyString = await platform.invokeMethod('getPrivateString');
-    } on PlatformException catch (e) {
-      batteryLevel = "Failed to get battery level: '${e.message}'.";
-    }
-  }
-
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
     packageName: 'Unknown',
@@ -76,7 +66,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _initPackageInfo();
-    getKeys();
   }
 
   void _incrementCounter() {

@@ -36,7 +36,10 @@ import CryptoSwift
     }else if call.method == "getSecretString" {
         self?.getSecretKeyString(result: result,argument:call.arguments as! String)
     }else if call.method == "getCardDetail" {
-        self?.getcardDetailString(result: result,argument:call.arguments as! String)
+        guard let args = call.arguments as? [String : Any] else {return}
+        let detailMessage = args["detailMessage"] as! String
+        let serverPublicKey = args["serverPublicKey"] as! String
+        self?.getcardDetailString(result: result,argument:detailMessage)
     }else {
         result(FlutterMethodNotImplemented)
         return
